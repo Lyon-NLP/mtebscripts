@@ -32,7 +32,7 @@ SENTENCE_TRANSORMER_MODELS = [
     "flaubert/flaubert_base_cased",
     "flaubert/flaubert_large_cased",
     "dangvantuan/sentence-camembert-base",
-    #"dangvantuan/sentence-camembert-large", # bug
+    "dangvantuan/sentence-camembert-large", # bug
     "sentence-transformers/distiluse-base-multilingual-cased-v2",
     "sentence-transformers/all-MiniLM-L6-v2",
     "sentence-transformers/all-MiniLM-L12-v2",
@@ -122,7 +122,7 @@ TASK_LIST_BITEXTMINING = [
     "FloresBitextMining",
 ]
 
-TASKS = TASK_LIST_RETRIEVAL
+TASKS = TASK_LIST_CLASSIFICATION
 
 ##########################
 # Step 3 : Run benchmark #
