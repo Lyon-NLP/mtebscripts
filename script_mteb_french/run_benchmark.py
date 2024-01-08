@@ -32,7 +32,7 @@ SENTENCE_TRANSORMER_MODELS = [
     "flaubert/flaubert_base_cased",
     "flaubert/flaubert_large_cased",
     "dangvantuan/sentence-camembert-base",
-    "dangvantuan/sentence-camembert-large", # bug
+    #"dangvantuan/sentence-camembert-large", # bug
     "sentence-transformers/distiluse-base-multilingual-cased-v2",
     "sentence-transformers/all-MiniLM-L6-v2",
     "sentence-transformers/all-MiniLM-L12-v2",
@@ -57,6 +57,19 @@ SENTENCE_TRANSORMER_MODELS = [
     "sentence-transformers/sentence-t5-large",
     #"sentence-transformers/sentence-t5-xl",
     #"sentence-transformers/sentence-t5-xxl",
+]
+
+SENTENCE_TRANSORMER_MODELS = [
+    "camembert/camembert-base", # bug
+    "camembert/camembert-large", # bug
+    "dangvantuan/sentence-camembert-large", # bug
+    "izhx/udever-bloom-560m", # too big
+    "izhx/udever-bloom-1b1", # too big
+    "izhx/udever-bloom-3b", # too big
+    "izhx/udever-bloom-7b1", # too big
+    "intfloat/e5-mistral-7b-instruct", # too big
+    "sentence-transformers/sentence-t5-xl",
+    "sentence-transformers/sentence-t5-xxl",
 ]
 
 
