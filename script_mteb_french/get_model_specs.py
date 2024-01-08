@@ -59,7 +59,7 @@ def get_model_specs(model_name: str, model_type: str) -> Dict:
 
     num_params, embedding_size, input_size = getattr(model_spec_utils, GET_SPEC_FUNCTIONS[model_type])(model_name)
 
-    model_size_float32_in_gb = num_params * 3.7 / 1e9
+    model_size_float32_in_gb = num_params * 4 / 1e9
     model_size_with_hf_filesystem = get_size_using_HF_filsystem(model_name) if model_type in ["sentence_transformers", "udever_bloom"] else None
     specs = {
         "computed_size_in_gb": model_size_float32_in_gb,
