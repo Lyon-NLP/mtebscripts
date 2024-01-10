@@ -36,6 +36,8 @@ docker build -t mtebscripts_image .
 ```
 docker run -v $(pwd):/mtebscripts mtebscripts_image sh -c "cd script_mteb_french && python run_benchmark.py"
 ```
+If you want to use the gpu, make sure to add the `--gpus` option to your run command, or `--runtime=nvidia` if you are using an older version of docker.
+
 Note: Because the volume is shared between the host and the container, the results will be available in the host at the end.
 
 ## Models' characteristics
