@@ -331,7 +331,7 @@ def estimate_cost_Summarization_task(
     return cost
 
 
-costs_dump = {"PRICE_FOR_1K_TOKENS_IN_$": PRICE_PER_1K_TOKEN}
+costs_dump = {"PRICE_FOR_1K_TOKENS_IN_$": PRICE_PER_1K_TOKEN, "PRICE_FOR_TASK_EVALUATION": {}}
 evaluation = MTEB(tasks=TASK_LIST, task_langs=TASKS_LANGS)
 for task in evaluation.tasks:
     match task.description["type"]:
@@ -359,7 +359,7 @@ for task in evaluation.tasks:
             cost = estimate_cost_Summarization_task(task, PRICE_PER_1K_TOKEN)
 
     print(task.description["name"], ":", cost, "$")
-    costs_dump[task.description["name"]] = cost
+    costs_dump["PRICE_FOR_TASK_EVALUATION"][task.description["name"]] = cost
 
 with open("cost_estimation.json", "w") as f:
     json.dump(costs_dump, f)
