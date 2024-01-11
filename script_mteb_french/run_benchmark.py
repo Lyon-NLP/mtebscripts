@@ -81,7 +81,7 @@ OPEN_AI_MODELS = ["text-embedding-ada-002"]
 
 COHERE_MODELS = ["embed-multilingual-light-v3.0", "embed-multilingual-v3.0"]
 
-MODELS = [ModelConfig(name, model_type="cohere") for name in COHERE_MODELS]
+MODELS = [ModelConfig(name, model_type="sentence_transformer") for name in SENTENCE_TRANSORMER_MODELS]
 
 # MODELS = [ModelConfig("Geotrend/bert-base-25lang-cased", model_type="sentence_transformer")]
 
@@ -127,15 +127,7 @@ TASK_LIST_BITEXTMINING = [
     "FloresBitextMining",
 ]
 
-TASKS = (
-    TASK_LIST_CLASSIFICATION
-    + TASK_LIST_CLUSTERING
-    + TASK_LIST_PAIR_CLASSIFICATION
-    + TASK_LIST_RERANKING
-    + TASK_LIST_RETRIEVAL
-    + TASK_LIST_STS
-    + TASK_LIST_SUMMARIZATION
-)
+TASKS = TASK_LIST_BITEXTMINING
 
 ##########################
 # Step 3 : Run benchmark #
