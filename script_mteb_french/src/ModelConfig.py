@@ -1,10 +1,14 @@
 import os
 from dotenv import load_dotenv
 
-from .OpenAIEmbeddingFunction import OpenAIEmbeddingFunction
-from .VoyageAIEmbeddingFunction import VoyageAIEmbeddingFunction
-from .SentenceTransformerEmbeddingFunction import SentenceTransformerEmbeddingFunction
 from .ChromaDBEmbedder import ChromaDBEmbedder
+from .CohereEmbeddingFunction import CohereEmbeddingFunction
+from .OpenAIEmbeddingFunction import OpenAIEmbeddingFunction
+from .SentenceTransformerEmbeddingFunction import SentenceTransformerEmbeddingFunction
+from .UniversalSentenceEncoderEmbeddingFunction import (
+    UniversalSentenceEncoderEmbeddingFunction,
+)
+from .VoyageAIEmbeddingFunction import VoyageAIEmbeddingFunction
 
 load_dotenv()
 
@@ -42,15 +46,16 @@ class ModelConfig(ChromaDBEmbedder):
         self.embedding_function = self.get_embedding_function()
 
         # inherit the saving of embeddings, and encoding logic from ChromDBEmbedder
-        save_embbeddings = False if model_type == "sentence_transformer" else True
+        save_embbeddings = False if (model_type == "sentence_transformer" or model_type == "universal_sentence_encoder") else True
         super().__init__(
             self.embedding_function,
             save_embbedings=save_embbeddings,
-            )
+        )
 
     @property
     def _max_token_per_model(self):
         return {
+            "cohere": 4096,
             "voyage_ai": {
                 "voyage-01": 4096,
                 "voyage-lite-01": 4096,
@@ -58,6 +63,7 @@ class ModelConfig(ChromaDBEmbedder):
             },
             "open_ai": 8191,
             "sentence_transformer": 4096,
+            "universal_sentence_encoder": 4096,
         }
 
     @property
@@ -105,11 +111,17 @@ class ModelConfig(ChromaDBEmbedder):
 
     def get_embedding_function(self):
         match self.model_type:
+            case "cohere":
+                return CohereEmbeddingFunction(self.model_name, self.max_token_length)
             case "voyage_ai":
                 return VoyageAIEmbeddingFunction(self.model_name, self.max_token_length)
             case "open_ai":
                 return OpenAIEmbeddingFunction(self.model_name, self.max_token_length)
             case "sentence_transformer":
                 return SentenceTransformerEmbeddingFunction(
+                    self.model_name, self.max_token_length
+                )
+            case "universal_sentence_encoder":
+                return UniversalSentenceEncoderEmbeddingFunction(
                     self.model_name, self.max_token_length
                 )

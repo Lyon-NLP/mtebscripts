@@ -33,9 +33,12 @@ SENTENCE_TRANSORMER_MODELS = [
     "sentence-transformers/distiluse-base-multilingual-cased-v2",
     "sentence-transformers/all-MiniLM-L6-v2",
     "sentence-transformers/all-MiniLM-L12-v2",
+    "sentence-transformers/LaBSE",
+    "sentence-transformers/multi-qa-MiniLM-L6-cos-v1",
     "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
     "intfloat/multilingual-e5-base",
     "intfloat/multilingual-e5-large",
+    "intfloat/multilingual-e5-small",
     "distilbert-base-uncased",
     "Geotrend/distilbert-base-25lang-cased",
     "Geotrend/distilbert-base-en-fr-es-pt-it-cased",
@@ -61,8 +64,14 @@ SENTENCE_TRANSORMER_MODELS = [
     "izhx/udever-bloom-3b", # too big
     "izhx/udever-bloom-7b1", # too big
     "intfloat/e5-mistral-7b-instruct", # too big
+    "xlm-roberta-base", # bug
+    "xlm-roberta-large" # bug
 ]
 """
+
+UNIVERSAL_SENTENCE_ENCODER_MODELS = [
+    "vprelovac/universal-sentence-encoder-multilingual-3"
+]
 
 LASER_MODELS = ["Laser2"]
 
@@ -70,10 +79,10 @@ VOYAGE_MODELS = ["voyage-lite-01", "voyage-01"]
 
 OPEN_AI_MODELS = ["text-embedding-ada-002"]
 
-MODELS = [
-    ModelConfig(name, model_type="sentence_transformer")
-    for name in SENTENCE_TRANSORMER_MODELS
-]
+COHERE_MODELS = ["embed-multilingual-light-v3.0", "embed-multilingual-v3.0"]
+
+MODELS = [ModelConfig(name, model_type="cohere") for name in COHERE_MODELS]
+
 # MODELS = [ModelConfig("Geotrend/bert-base-25lang-cased", model_type="sentence_transformer")]
 
 
@@ -82,7 +91,7 @@ MODELS = [
 ########################
 TASK_LIST_CLASSIFICATION = [
     "AmazonReviewsClassification",
-    "MasakhaNEWSClassification", # bug when evealuating with bloom, need to enable truncation
+    "MasakhaNEWSClassification",  # bug when evealuating with bloom, need to enable truncation
     "MassiveIntentClassification",
     "MassiveScenarioClassification",
     "MTOPDomainClassification",
@@ -118,7 +127,15 @@ TASK_LIST_BITEXTMINING = [
     "FloresBitextMining",
 ]
 
-TASKS = TASK_LIST_CLASSIFICATION
+TASKS = (
+    TASK_LIST_CLASSIFICATION
+    + TASK_LIST_CLUSTERING
+    + TASK_LIST_PAIR_CLASSIFICATION
+    + TASK_LIST_RERANKING
+    + TASK_LIST_RETRIEVAL
+    + TASK_LIST_STS
+    + TASK_LIST_SUMMARIZATION
+)
 
 ##########################
 # Step 3 : Run benchmark #
