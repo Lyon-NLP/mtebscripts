@@ -79,7 +79,7 @@ UNIVERSAL_SENTENCE_ENCODER_MODELS = [
 
 LASER_MODELS = ["Laser2"]
 
-VOYAGE_MODELS = ["voyage-lite-01", "voyage-01"]
+VOYAGE_MODELS = ["voyage-02"]
 
 OPEN_AI_MODELS = ["text-embedding-ada-002"]
 
@@ -132,18 +132,10 @@ TASK_LIST_SUMMARIZATION = [
 
 TASK_LIST_BITEXTMINING = [
     "DiaBLaBitextMining",
-    "FloresBitextMining",
+    #"FloresBitextMining",
 ]
 
-TASKS = (
-    TASK_LIST_CLASSIFICATION
-    + TASK_LIST_CLUSTERING
-    + TASK_LIST_PAIR_CLASSIFICATION
-    + TASK_LIST_RERANKING
-    + TASK_LIST_RETRIEVAL
-    + TASK_LIST_STS
-    + TASK_LIST_SUMMARIZATION
-)
+TASKS = TASK_LIST_BITEXTMINING
 
 ##########################
 # Step 3 : Run benchmark #
