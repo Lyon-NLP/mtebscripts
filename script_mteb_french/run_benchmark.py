@@ -166,8 +166,8 @@ def parse_args() -> argparse.Namespace:
 
 
 def main(args):
-    MODELS = [ModelConfig(name, model_type=args.model_type) for name in TYPES_TO_MODELS[args.model_type]]
-    for model_config in MODELS:
+    models = [ModelConfig(name, model_type=args.model_type) for name in TYPES_TO_MODELS[args.model_type]]
+    for model_config in models:
         # fix the max_seq_length for some models with errors
         if model_config.model_name in SENTENCE_TRANSORMER_MODELS_WITH_ERRORS:
             model_config.embedding_function.model._first_module().max_seq_length = 512
