@@ -93,7 +93,6 @@ for model_config in MODELS:
 
 # MODELS = [ModelConfig("Geotrend/bert-base-25lang-cased", model_type="sentence_transformer")]
 
-
 ########################
 # Step 2 : Setup tasks #
 ########################
