@@ -159,14 +159,15 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument("--lang", type=str, default="fr")
     parser.add_argument("--batchsize", type=int, default=32)
-    parser.add_argument("--model_type", type=str, default="sentence_transformer")
+    parser.add_argument("--model_type", nargs='+', default=["sentence_transformer"])
     args = parser.parse_args()
 
     return args
 
 
 def main(args):
-    models = [ModelConfig(name, model_type=args.model_type) for name in TYPES_TO_MODELS[args.model_type]]
+    print("Running benchmark with the following model types: ", args.model_type)
+    models = [ModelConfig(name, model_type=model_type) for model_type in args.model_type for name in TYPES_TO_MODELS[model_type]]
     for model_config in models:
         # fix the max_seq_length for some models with errors
         if model_config.model_name in SENTENCE_TRANSORMER_MODELS_WITH_ERRORS:
