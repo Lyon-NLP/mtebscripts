@@ -25,7 +25,7 @@ cd script_mteb_french
 python run_benchmark.py
 ```
 
-By default the benchmark run on sentence_transformer models but you can specify the type with the argument `--model_type`:
+By default the benchmark runs on sentence_transformer models but you can specify the type with the argument `--model_type`:
 ```bash
 # default ['sentence_transformer']
 python run_benchmark.py
