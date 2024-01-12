@@ -132,7 +132,7 @@ TASK_LIST_SUMMARIZATION = [
 
 TASK_LIST_BITEXTMINING = [
     "DiaBLaBitextMining",
-    "FloresBitextMining",
+    #"FloresBitextMining",
 ]
 
 TASKS = TASK_LIST_BITEXTMINING
