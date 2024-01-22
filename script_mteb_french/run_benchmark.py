@@ -314,6 +314,7 @@ def main(args):
                 run_bitext_mining_tasks(args=args, model_config=model_config, task=task)
             else:
                 # change the task in the model config ! This is important to specify the chromaDB collection !
+                eval_splits = ["validation"] if task == "MSMARCO" else ["test"]
                 model_name = model_config.model_name
                 model_config.batch_size = args.batchsize
                 logging.info(f"Running task: {task} with model {model_name}")
