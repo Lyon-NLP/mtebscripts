@@ -24,32 +24,8 @@ Example: MODELS = [ModelConfig("intfloat/multilingual-e5-base", model_type="sent
 # Step 1 : Setup model list #
 #############################
 SENTENCE_TRANSORMER_MODELS = [
-    "bert-base-multilingual-cased",
-    "bert-base-multilingual-uncased",
-    "flaubert/flaubert_base_uncased",
-    "flaubert/flaubert_base_cased",
-    "flaubert/flaubert_large_cased",
-    "dangvantuan/sentence-camembert-base",
-    "sentence-transformers/distiluse-base-multilingual-cased-v2",
-    "sentence-transformers/all-MiniLM-L6-v2",
-    "sentence-transformers/all-MiniLM-L12-v2",
-    "sentence-transformers/LaBSE",
-    "sentence-transformers/multi-qa-MiniLM-L6-cos-v1",
-    "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
-    "intfloat/multilingual-e5-base",
-    "intfloat/multilingual-e5-large",
-    "intfloat/multilingual-e5-small",
-    "distilbert-base-uncased",
-    "Geotrend/distilbert-base-25lang-cased",
-    "Geotrend/distilbert-base-en-fr-es-pt-it-cased",
-    "Geotrend/distilbert-base-en-fr-cased",
-    "Geotrend/distilbert-base-fr-cased",
-    "Geotrend/bert-base-25lang-cased",
-    "Geotrend/bert-base-15lang-cased",
-    "Geotrend/bert-base-10lang-cased",
-    "shibing624/text2vec-base-multilingual",
-    "izhx/udever-bloom-560m",
-    "izhx/udever-bloom-1b1",
+    #"izhx/udever-bloom-560m",
+    #"izhx/udever-bloom-1b1",
     "sentence-transformers/sentence-t5-base",
     "sentence-transformers/sentence-t5-large",
     "sentence-transformers/sentence-t5-xl",
@@ -66,11 +42,11 @@ SENTENCE_TRANSORMER_MODELS = [
 
 # these models max_length is indicated to be 514 whereas the embedding layer actually supports 512
 SENTENCE_TRANSORMER_MODELS_WITH_ERRORS = [
-    "camembert/camembert-base",
-    "camembert/camembert-large",
-    "dangvantuan/sentence-camembert-large",
-    "xlm-roberta-base",
-    "xlm-roberta-large",
+    #"camembert/camembert-base",
+    #"camembert/camembert-large",
+    #"dangvantuan/sentence-camembert-large",
+    #"xlm-roberta-base",
+    #"xlm-roberta-large",
 ]
 
 UNIVERSAL_SENTENCE_ENCODER_MODELS = [
@@ -139,12 +115,8 @@ TASK_LIST_BITEXTMINING = [
 TASKS = (
     TASK_LIST_CLASSIFICATION
     + TASK_LIST_CLUSTERING
-    + TASK_LIST_PAIR_CLASSIFICATION
     + TASK_LIST_RERANKING
     + TASK_LIST_RETRIEVAL
-    + TASK_LIST_STS
-    + TASK_LIST_SUMMARIZATION
-    + TASK_LIST_BITEXTMINING
 )
 
 ##########################
