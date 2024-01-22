@@ -1,8 +1,16 @@
+import sys
 import argparse
+import logging
 
 from mteb import MTEB
 
 from src.ModelConfig import ModelConfig
+
+logging.basicConfig(
+    stream=sys.stdout,
+    level=logging.INFO,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+)
 
 """
 How to use ?
@@ -26,34 +34,6 @@ Example: MODELS = [ModelConfig("intfloat/multilingual-e5-base", model_type="sent
 SENTENCE_TRANSORMER_MODELS = [
     "bert-base-multilingual-cased",
     "bert-base-multilingual-uncased",
-    "flaubert/flaubert_base_uncased",
-    "flaubert/flaubert_base_cased",
-    "flaubert/flaubert_large_cased",
-    "dangvantuan/sentence-camembert-base",
-    "sentence-transformers/distiluse-base-multilingual-cased-v2",
-    "sentence-transformers/all-MiniLM-L6-v2",
-    "sentence-transformers/all-MiniLM-L12-v2",
-    "sentence-transformers/LaBSE",
-    "sentence-transformers/multi-qa-MiniLM-L6-cos-v1",
-    "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
-    "intfloat/multilingual-e5-base",
-    "intfloat/multilingual-e5-large",
-    "intfloat/multilingual-e5-small",
-    "distilbert-base-uncased",
-    "Geotrend/distilbert-base-25lang-cased",
-    "Geotrend/distilbert-base-en-fr-es-pt-it-cased",
-    "Geotrend/distilbert-base-en-fr-cased",
-    "Geotrend/distilbert-base-fr-cased",
-    "Geotrend/bert-base-25lang-cased",
-    "Geotrend/bert-base-15lang-cased",
-    "Geotrend/bert-base-10lang-cased",
-    "shibing624/text2vec-base-multilingual",
-    "izhx/udever-bloom-560m",
-    "izhx/udever-bloom-1b1",
-    "sentence-transformers/sentence-t5-base",
-    "sentence-transformers/sentence-t5-large",
-    "sentence-transformers/sentence-t5-xl",
-    "sentence-transformers/sentence-t5-xxl",
 ]
 
 """
@@ -100,7 +80,7 @@ TYPES_TO_MODELS = {
 ########################
 TASK_LIST_CLASSIFICATION = [
     "AmazonReviewsClassification",
-    "MasakhaNEWSClassification",  # bug when evealuating with bloom, need to enable truncation
+    "MasakhaNEWSClassification",
     "MassiveIntentClassification",
     "MassiveScenarioClassification",
     "MTOPDomainClassification",
@@ -133,7 +113,7 @@ TASK_LIST_SUMMARIZATION = [
 
 TASK_LIST_BITEXTMINING = [
     "DiaBLaBitextMining",
-    # "FloresBitextMining",
+    "FloresBitextMining",
 ]
 
 TASKS = (
@@ -164,6 +144,88 @@ TYPES_TO_TASKS = {
 ##########################
 
 
+def run_bitext_mining_tasks(args, model_config: ModelConfig, task: str):
+    """Runs Bitext Mining tasks"""
+    model_name = model_config.model_name
+    model_config.batch_size = args.batchsize
+
+    
+    eval_splits = ["validation"] if task == "MSMARCO" else ["test"]
+
+    if task == "DiaBLaBitextMining":
+        evaluation = MTEB(tasks=[task], task_langs=[args.lang, "en"])
+        evaluation.run(
+            model_config,
+            output_folder=f"results/{model_name}",
+            batch_size=args.batchsize,
+            eval_splits=eval_splits,
+        )
+    elif task == "FloresBitextMining":
+        evaluation = MTEB(tasks=[task], task_langs=[args.lang, args.other_lang])
+        evaluation.run(
+            model_config,
+            output_folder=f"results/{model_name}",
+            batch_size=args.batchsize,
+            eval_splits=["dev"],
+        )
+
+
+def get_models_per_type(args):
+    """Returns all models of input model_type"""
+    if args.max_token_length:
+        return [
+            ModelConfig(
+                name, model_type=model_type, max_token_length=args.max_token_length
+            )
+            for model_type in args.model_type
+            for name in TYPES_TO_MODELS[model_type]
+        ]
+    else:
+        return [
+            ModelConfig(name, model_type=model_type)
+            for model_type in args.model_type
+            for name in TYPES_TO_MODELS[model_type]
+        ]
+
+
+def get_one_specific_model(args):
+    """Returns ModelConfig of input model_name"""
+    model_name = args.model_name
+    model_type = args.model_type
+    max_token_length = args.max_token_length
+
+    if len(model_type) > 1:
+        raise Exception(
+            "Only one model type needs to be specified when a model name is given."
+        )
+    model_type_value = model_type[0]
+
+    available_models_for_type = TYPES_TO_MODELS[model_type_value]
+    if model_name not in available_models_for_type:
+        raise Exception(
+            f"Model name not in {available_models_for_type}.\nPlease select a correct model name corresponding to your model type."
+        )
+
+    if max_token_length:
+        return [
+            ModelConfig(
+                model_name=model_name,
+                model_type=model_type_value,
+                max_token_length=max_token_length,
+            )
+        ]
+    else:
+        return [ModelConfig(model_name=model_name, model_type=model_type_value)]
+
+
+def get_tasks(args):
+    return [
+        (task_type, task)
+        for task_type in args.task_type
+        for task in TYPES_TO_TASKS[task_type]
+    ]
+
+
 def parse_args() -> argparse.Namespace:
     """Parse command line arguments
 
@@ -183,45 +245,49 @@ def parse_args() -> argparse.Namespace:
         default=["all"],
         help="Choose tasks to run the evaluation on.",
     )
+    parser.add_argument(
+        "--other_lang",
+        type=str,
+        default="en",
+        help="Other language for Bitext Mining task",
+    )
+    parser.add_argument("--max_token_length", type=int, default=None)
     args = parser.parse_args()
 
     return args
 
 
 def main(args):
-    model_type = args.model_type
-    model_name = args.model_name
+    # Select tasks to run evaluation on, default is set to all tasks
+    tasks = get_tasks(args)
 
-    tasks = [(task_type, task) for task_type in args.task_type for task in TYPES_TO_TASKS[task_type]]
-
-    if model_name:
-        print("Running benchmark with the following model: ", model_name)
-        if len(model_type) > 1:
-            raise Exception(
-                "Only one model type needs to be specified when a model name is given."
-            )
-        models = [ModelConfig(model_name=model_name, model_type=model_type[0])]
+    # Running one model at a time or all models
+    if args.model_name:
+        logging.info(f"Running benchmark with the following model: {args.model_name}")
+        models = get_one_specific_model(args)
     else:
-        print("Running benchmark with the following model types: ", args.model_type)
-        models = [
-            ModelConfig(name, model_type=model_type)
-            for model_type in args.model_type
-            for name in TYPES_TO_MODELS[model_type]
-        ]
+        logging.info(
+            f"Running benchmark with the following model types: {args.model_type}"
+        )
+        models = get_models_per_type(args=args)
 
+    # Running evaluation on all models for selected tasks
     for model_config in models:
         # fix the max_seq_length for some models with errors
         if model_config.model_name in SENTENCE_TRANSORMER_MODELS_WITH_ERRORS:
             model_config.embedding_function.model._first_module().max_seq_length = 512
+
         for task_type, task in tasks:
-            if task_type == "bitextmining":
-                print("Not implemented yet.")
-                pass
+            if (task_type == "bitextmining") or ("BitextMining" in task):
+                logging.warning("If other_lang is not specified in args, then it is set to 'en' by default")
+                logging.info(f"Running task: {task} with model {model_config.model_name}")
+                print(args.other_lang)
+                run_bitext_mining_tasks(args=args, model_config=model_config, task=task)
             else:
                 # change the task in the model config ! This is important to specify the chromaDB collection !
                 model_name = model_config.model_name
                 model_config.batch_size = args.batchsize
-                print("Running task: ", task, "with model", model_name)
+                logging.info(f"Running task: {task} with model {model_name}")
                 eval_splits = ["validation"] if task == "MSMARCO" else ["test"]
                 evaluation = MTEB(tasks=[task], task_langs=[args.lang])
                 evaluation.run(
