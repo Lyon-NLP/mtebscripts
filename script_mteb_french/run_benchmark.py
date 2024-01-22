@@ -139,13 +139,25 @@ TASK_LIST_BITEXTMINING = [
 TASKS = (
     TASK_LIST_CLASSIFICATION
     + TASK_LIST_CLUSTERING
-    + TASK_LIST_PAIR_CLASSIFICATION
     + TASK_LIST_RERANKING
     + TASK_LIST_RETRIEVAL
+    + TASK_LIST_PAIR_CLASSIFICATION
     + TASK_LIST_STS
     + TASK_LIST_SUMMARIZATION
     + TASK_LIST_BITEXTMINING
 )
+
+TYPES_TO_TASKS = {
+    "all": TASKS,
+    "classification": TASK_LIST_CLASSIFICATION,
+    "clustering": TASK_LIST_CLUSTERING,
+    "reranking": TASK_LIST_RERANKING,
+    "retrieval": TASK_LIST_RETRIEVAL,
+    "pair_classification": TASK_LIST_PAIR_CLASSIFICATION,
+    "sts": TASK_LIST_STS,
+    "summarization": TASK_LIST_SUMMARIZATION,
+    "bitextmining": TASK_LIST_BITEXTMINING,
+}
 
 ##########################
 # Step 3 : Run benchmark #
@@ -162,35 +174,62 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--lang", type=str, default="fr")
     parser.add_argument("--batchsize", type=int, default=32)
     parser.add_argument("--model_type", nargs="+", default=["sentence_transformer"])
+    parser.add_argument(
+        "--model_name", type=str, default=None, help="Run evaluation on one model only."
+    )
+    parser.add_argument(
+        "--task_type",
+        nargs="+",
+        default=["all"],
+        help="Choose tasks to run the evaluation on.",
+    )
     args = parser.parse_args()
 
     return args
 
 
 def main(args):
-    print("Running benchmark with the following model types: ", args.model_type)
-    models = [
-        ModelConfig(name, model_type=model_type)
-        for model_type in args.model_type
-        for name in TYPES_TO_MODELS[model_type]
-    ]
+    model_type = args.model_type
+    model_name = args.model_name
+
+    tasks = [(task_type, task) for task_type in args.task_type for task in TYPES_TO_TASKS[task_type]]
+
+    if model_name:
+        print("Running benchmark with the following model: ", model_name)
+        if len(model_type) > 1:
+            raise Exception(
+                "Only one model type needs to be specified when a model name is given."
+            )
+        models = [ModelConfig(model_name=model_name, model_type=model_type[0])]
+    else:
+        print("Running benchmark with the following model types: ", args.model_type)
+        models = [
+            ModelConfig(name, model_type=model_type)
+            for model_type in args.model_type
+            for name in TYPES_TO_MODELS[model_type]
+        ]
+
     for model_config in models:
         # fix the max_seq_length for some models with errors
         if model_config.model_name in SENTENCE_TRANSORMER_MODELS_WITH_ERRORS:
             model_config.embedding_function.model._first_module().max_seq_length = 512
-        for task in TASKS:
-            # change the task in the model config ! This is important to specify the chromaDB collection !
-            model_name = model_config.model_name
-            model_config.batch_size = args.batchsize
-            print("Running task: ", task, "with model", model_name)
-            eval_splits = ["validation"] if task == "MSMARCO" else ["test"]
-            evaluation = MTEB(tasks=[task], task_langs=[args.lang])
-            evaluation.run(
-                model_config,
-                output_folder=f"results/{model_name}",
-                batch_size=args.batchsize,
-                eval_splits=eval_splits,
-            )
+        for task_type, task in tasks:
+            if task_type == "bitextmining":
+                print("Not implemented yet.")
+                pass
+            else:
+                # change the task in the model config ! This is important to specify the chromaDB collection !
+                model_name = model_config.model_name
+                model_config.batch_size = args.batchsize
+                print("Running task: ", task, "with model", model_name)
+                eval_splits = ["validation"] if task == "MSMARCO" else ["test"]
+                evaluation = MTEB(tasks=[task], task_langs=[args.lang])
+                evaluation.run(
+                    model_config,
+                    output_folder=f"results/{model_name}",
+                    batch_size=args.batchsize,
+                    eval_splits=eval_splits,
+                )
 
 
 if __name__ == "__main__":
