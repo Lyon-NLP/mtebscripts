@@ -178,8 +178,7 @@ def run_bitext_mining_tasks(args, model_config: ModelConfig, task: str):
     model_name = model_config.model_name
     model_config.batch_size = args.batchsize
 
-    
-    eval_splits = ["validation"] if task == "MSMARCO" else ["test"]
+    eval_splits = ["dev"] if task == "FloresBitextMining" else ["test"]
 
     if task == "DiaBLaBitextMining":
         evaluation = MTEB(tasks=[task], task_langs=[args.lang, "en"])
@@ -195,62 +194,60 @@ def run_bitext_mining_tasks(args, model_config: ModelConfig, task: str):
             model_config,
             output_folder=f"results/{model_name}",
             batch_size=args.batchsize,
-            eval_splits=["dev"],
+            eval_splits=eval_splits,
         )
 
 
-def get_models_per_type(args):
-    """Returns all models of input model_type"""
-    if args.max_token_length:
-        return [
-            ModelConfig(
-                name, model_type=model_type, max_token_length=args.max_token_length
+def get_models(model_name, model_type, max_token_length) -> list[ModelConfig]:
+    """Returns ModelConfig of input model_name or all ModelConfig model_type's list of models"""
+    if model_name:
+        logging.info(f"Running benchmark with the following model: {model_name}")
+        if len(model_type) > 1:
+            raise Exception(
+                "Only one model type needs to be specified when a model name is given."
             )
-            for model_type in args.model_type
-            for name in TYPES_TO_MODELS[model_type]
-        ]
-    else:
-        return [
-            ModelConfig(name, model_type=model_type)
-            for model_type in args.model_type
-            for name in TYPES_TO_MODELS[model_type]
-        ]
 
+        model_type_value = model_type[0]
+        available_models_for_type = TYPES_TO_MODELS[model_type_value]
 
-def get_one_specific_model(args):
-    """Returns ModelConfig of input model_name"""
-    model_name = args.model_name
-    model_type = args.model_type
-    max_token_length = args.max_token_length
-
-    if len(model_type) > 1:
-        raise Exception(
-            "Only one model type needs to be specified when a model name is given."
-        )
-    model_type_value = model_type[0]
-
-    available_models_for_type = TYPES_TO_MODELS[model_type_value]
-    if model_name not in available_models_for_type:
-        raise Exception(
-            f"Model name not in {available_models_for_type}.\nPlease select a correct model name corresponding to your model type."
-        )
-
-    if max_token_length:
-        return [
-            ModelConfig(
-                model_name=model_name,
-                model_type=model_type_value,
-                max_token_length=max_token_length,
+        if model_name not in available_models_for_type:
+            raise Exception(
+                f"Model name not in {available_models_for_type}.\n\
+                Please select a correct model name corresponding to your model type."
             )
-        ]
+
+        if max_token_length:
+            return [
+                ModelConfig(
+                    model_name=model_name,
+                    model_type=model_type_value,
+                    max_token_length=max_token_length,
+                )
+            ]
+        else:
+            return [ModelConfig(model_name=model_name, model_type=model_type_value)]
     else:
-        return [ModelConfig(model_name=model_name, model_type=model_type_value)]
+        logging.info(f"Running benchmark with the following model types: {model_type}")
+        if max_token_length:
+            return [
+                ModelConfig(
+                    name, model_type=model_type, max_token_length=max_token_length
+                )
+                for model_type in model_type
+                for name in TYPES_TO_MODELS[model_type]
+            ]
+        else:
+            return [
+                ModelConfig(name, model_type=model_type)
+                for model_type in model_type
+                for name in TYPES_TO_MODELS[model_type]
+            ]
 
 
-def get_tasks(args):
+def get_tasks(task_type):
     return [
         (task_type, task)
-        for task_type in args.task_type
+        for task_type in task_type
         for task in TYPES_TO_TASKS[task_type]
     ]
 
@@ -288,17 +285,14 @@ def parse_args() -> argparse.Namespace:
 
 def main(args):
     # Select tasks to run evaluation on, default is set to all tasks
-    tasks = get_tasks(args)
+    tasks = get_tasks(task_type=args.task_type)
 
     # Running one model at a time or all models
-    if args.model_name:
-        logging.info(f"Running benchmark with the following model: {args.model_name}")
-        models = get_one_specific_model(args)
-    else:
-        logging.info(
-            f"Running benchmark with the following model types: {args.model_type}"
-        )
-        models = get_models_per_type(args=args)
+    models = get_models(
+        model_name=args.model_name,
+        model_type=args.model_type,
+        max_token_length=args.max_token_length,
+    )
 
     # Running evaluation on all models for selected tasks
     for model_config in models:
@@ -308,9 +302,12 @@ def main(args):
 
         for task_type, task in tasks:
             if (task_type == "bitextmining") or ("BitextMining" in task):
-                logging.warning("If other_lang is not specified in args, then it is set to 'en' by default")
-                logging.info(f"Running task: {task} with model {model_config.model_name}")
-                print(args.other_lang)
+                logging.warning(
+                    "If other_lang is not specified in args, then it is set to 'en' by default"
+                )
+                logging.info(
+                    f"Running task: {task} with model {model_config.model_name}"
+                )
                 run_bitext_mining_tasks(args=args, model_config=model_config, task=task)
             else:
                 # change the task in the model config ! This is important to specify the chromaDB collection !
