@@ -100,7 +100,7 @@ class ResultParser:
         return tasks_attribute
 
 
-    def _get_task_score(self, task_name:str, task_type:str, task_results:str) -> tuple(float, tuple[str, str]):
+    def _get_task_score(self, task_name:str, task_type:str, task_results:str) -> tuple[float, tuple[str, str]]:
         """Considering a task, gets its results
 
         Args:
@@ -116,7 +116,7 @@ class ResultParser:
         match task_type:
             case "BitextMining":
                 print("Results of task BitextMining must be treated separately")
-                pass
+                return None, (task_name, None)
             case other:
                 result = task_results[self.split]
                 if self.lang in result:
@@ -129,6 +129,9 @@ class ResultParser:
                     elif main_score == "cosine_spearman":
                         result = result['cos_sim']['spearman']
                         result_name_score = (task_name, "cosine_spearman")
+                    elif main_score == "ap":
+                        result = result['cos_sim']['ap']
+                        result_name_score = (task_name, "cosine_ap")
                     else:
                         result = None
                         result_name_score = (task_name, None)
@@ -155,7 +158,7 @@ class ResultParser:
             for task_name, task_results in model_results.items():
                 if task_name in self.tasks_type_map:
                     task_type = self.tasks_type_map[task_name]
-                    result, result_name_score = self.get_task_score(task_name, task_type, task_results)
+                    result, result_name_score = self._get_task_score(task_name, task_type, task_results)
                     results_records.append({'model': model_name, 'dataset': task_name, 'result': result})
                     tasks_main_scores_subset.append(result_name_score)
                 else:
@@ -178,16 +181,16 @@ class ResultParser:
             pd.DataFrame: the df with a secondary column index
         """
         # reorder column by task type
-        reordered_col_names = [col for col in self.task_type_mapping if col in results_df.columns]
+        reordered_col_names = [col for col in self.tasks_type_map if col in results_df.columns]
         results_df = results_df[reordered_col_names]
         # add multiindex
-        multiindex_col_names = [(v,k) for k,v in self.task_type_mapping.items() if k in results_df.columns]
+        multiindex_col_names = [(v,k) for k,v in self.tasks_type_map.items() if k in results_df.columns]
         results_df.columns = pd.MultiIndex.from_tuples(multiindex_col_names)
 
         return results_df
     
     @staticmethod
-    def _add_style_to_df(results_df:pd.DataFrame) -> pd.io.formats.style.Styler:
+    def _add_style_to_df(results_df:pd.DataFrame) -> pd.io.formats:
         """Adds style to the results df.
         - centers values
         - bold the max value of each column
@@ -223,7 +226,13 @@ class ResultParser:
             case "csv":
                 results_df.to_csv("results.csv")
             case "latex":
-                results_df.to_excel("results.tex")      
+                results_df.to_excel("results.tex")
+
+
+# TODO: split the correlation study and result parsing parts
+# TODO: make the result parsing lauchable via command line
+def parse_arguments():
+    pass
 
 
 if __name__ == '__main__':
