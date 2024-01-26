@@ -2,6 +2,8 @@
 
 ## This section contains usage information for script relative to results analysis
 
+Before starting, you can create your environment using the packages listed in *requirements.analysis.txt*, by using you favorite environment manager (and using ``pip install -r requirements.analysis.txt``)
+
 ### result_parser.py
 
 This scripts intent is to ***format results from json files in the results folder to a table*** (csv, excel or latex).
@@ -35,3 +37,8 @@ python .\script_mteb_french\results_analysis\results_parser.py --results_folder 
 
 
 ### data_correlation.py
+
+You can analyse the correlation between you results using this script and the following command : 
+```
+python .\script_mteb_french\results_analysis\dataset_correlation.py --results_folder ./results
+```
