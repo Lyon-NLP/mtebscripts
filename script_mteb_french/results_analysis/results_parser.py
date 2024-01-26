@@ -1,20 +1,19 @@
 import os
 import warnings
 import json
+from argparse import ArgumentParser, Namespace
 from mteb.abstasks import AbsTask
 import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
 
-class ResultParser:
+class ResultsParser:
     """A class to parse the results of MTEB evaluations
     """
     def __init__(self, split:str="test", lang:str="fr") -> None:
         self.split = split
         self.lang = lang
 
-        self.tasks_main_scores_map = ResultParser.get_tasks_attribute("main_score")
-        self.tasks_type_map = ResultParser.get_tasks_attribute("type")
+        self.tasks_main_scores_map = ResultsParser.get_tasks_attribute("main_score")
+        self.tasks_type_map = ResultsParser.get_tasks_attribute("type")
 
 
     def __call__(self, results_folder:str, apply_style:bool=False, save_results:bool=True, return_main_scores:bool=False, **kwargs) -> pd.DataFrame:
@@ -30,14 +29,14 @@ class ResultParser:
         Returns:
             pd.DataFrame: the results as a dataframe
         """
-        result_dict = ResultParser._load_json_files(results_folder)
+        result_dict = ResultsParser._load_json_files(results_folder)
         results_df, tasks_main_scores_subset = self._convert_to_results_dataframe(result_dict)
         results_df = self._add_multiindex_to_df(results_df)
 
         if apply_style:
-            results_df = ResultParser._add_style_to_df()
+            results_df = ResultsParser._add_style_to_df(results_df)
         if save_results:
-            ResultParser._save_as_file(results_df, **kwargs)
+            ResultsParser._save_as_file(results_df, **kwargs)
         if return_main_scores:
             return results_df, tasks_main_scores_subset
 
@@ -216,43 +215,35 @@ class ResultParser:
         return style
     
     @staticmethod
-    def _save_as_file(results_df:pd.DataFrame, format:str="excel"):
-        if format not in ["excel", "latex", "csv"]:
+    def _save_as_file(results_df:pd.DataFrame, output_format:str="excel"):
+        if output_format not in ["excel", "latex", "csv"]:
             raise ValueError(f"'format' argument should be either excel, latex or csv, not {format}")
         
-        match format:
+        match output_format:
             case "excel":
                 results_df.to_excel("results.xlsx")
             case "csv":
                 results_df.to_csv("results.csv")
             case "latex":
                 results_df.to_excel("results.tex")
+        print("Done !")
 
 
-# TODO: split the correlation study and result parsing parts
-# TODO: make the result parsing lauchable via command line
-def parse_arguments():
-    pass
+def parse_args() -> Namespace:
+    """Parse command line arguments
 
+    Returns:
+        (argparse.Namespace): the arguments
+    """
+    parser = ArgumentParser()
+    parser.add_argument("--results_folder", required=True, type=str)
+    parser.add_argument("--output_format", type=str, choices=["excel", "csv", "latex"], default="excel")
+    parser.add_argument("--apply_style", type=bool, default=True)
+    args = parser.parse_args()
+
+    return args
 
 if __name__ == '__main__':
-    results_folder_path = '../results'
-    rp = ResultParser()
-    results_df, tasks_main_scores_subset = rp(results_folder_path, return_main_scores=True, format="csv")
-    # dataset correlations
-    spearman_corr_matrix_datasets = results_df.corr(method='spearman')
-    spearman_corr_matrix_datasets.to_csv('correlation_analysis/spearman_corr_matrix_datasets.csv')
-    plt.figure(figsize=(10, 8))
-    sns.heatmap(spearman_corr_matrix_datasets, cmap='coolwarm', fmt=".2f", linewidths=.5)
-    plt.title('Dataset Correlation Heatmap (Spearman)')
-    plt.savefig('correlation_analysis/spearman_corr_heatmap_datasets.png', bbox_inches='tight')
-    with open('correlation_analysis/main_scores.json', 'w') as f:
-        json.dump(tasks_main_scores_subset, f, indent=4)
-    # model correlations
-    transposed_results_df = results_df.transpose()
-    spearman_corr_matrix_models = transposed_results_df.corr(method='spearman')
-    spearman_corr_matrix_models.to_csv('correlation_analysis/spearman_corr_matrix_models.csv')
-    plt.figure(figsize=(10, 8))
-    sns.heatmap(spearman_corr_matrix_models, cmap='coolwarm', fmt=".2f", linewidths=.5)
-    plt.title('Model Correlation Heatmap (Spearman)')
-    plt.savefig('correlation_analysis/spearman_corr_heatmap_models.png', bbox_inches='tight')
+    args = parse_args()
+    rp = ResultsParser()
+    results_df = rp(**dict(args._get_kwargs()))
