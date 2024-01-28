@@ -1,45 +1,45 @@
 model,pretrained_or_tuned,multilingual_or_french,number_params,size_gb,seq_len,embedding_dim,model_type,license
-bert-base-multilingual-cased,pretrained,multilingual,177853440,0.71141376,512,768,pooling/cls,Apache-2.0
-bert-base-multilingual-uncased,pretrained,multilingual,167356416,0.669425664,512,768,pooling/cls,Apache-2.0
-camembert/camembert-base,pretrained,french,110621952,0.442487808,514,768,pooling/cls,MIT
-camembert/camembert-large,pretrained,french,336661504,1.346646016,514,1024,pooling/cls,MIT
-dangvantuan/sentence-camembert-base,finetuned,french,110621952,0.442487808,128,768,siamese network,MIT / Apache-2.0
-dangvantuan/sentence-camembert-large,finetuned,french,336661504,1.346646016,128,1024,siamese network,MIT / Apache-2.0
-distilbert-base-uncased,,,,,,,,
-embed-multilingual-light-v3.0,finetuned,multilingual,,,512,384,,Closed source
-embed-multilingual-v3.0,finetuned,multilingual,,,512,1024,,Closed source
-flaubert/flaubert_base_cased,pretrained,french,138233088,0.552932352,512,768,pooling/cls,MIT
-flaubert/flaubert_base_uncased,pretrained,french,137321472,0.549285888,512,768,pooling/cls,MIT
-flaubert/flaubert_large_cased,pretrained,french,373214208,1.492856832,512,1024,pooling/cls,MIT
-Geotrend/bert-base-10lang-cased,pretrained,multilingual,137741568,0.550966272,512,768,pooling/cls,Apache-2.0
-Geotrend/bert-base-15lang-cased,pretrained,multilingual,141012480,0.56404992,512,768,pooling/cls,Apache-2.0
-Geotrend/bert-base-25lang-cased,,,,,,,,
-Geotrend/distilbert-base-25lang-cased,pretrained,multilingual,108190464,0.432761856,512,768,pooling/cls,Apache-2.0
-Geotrend/distilbert-base-en-fr-cased,pretrained,bilingual,68578560,0.27431424,512,768,pooling/cls,Apache-2.0
-Geotrend/distilbert-base-en-fr-es-pt-it-cased,pretrained,multilingual,76067328,0.304269312,512,768,pooling/cls,Apache-2.0
-Geotrend/distilbert-base-fr-cased,,,,,,,,
-intfloat/multilingual-e5-base,pretrained,multilingual,278043648,1.112174592,512,768,siamese network,MIT
-intfloat/multilingual-e5-large,pretrained,multilingual,559890432,2.239561728,512,1024,siamese network,MIT
-intfloat/multilingual-e5-small,pretrained,multilingual,117653760,0.47061504,512,384,siamese network,MIT
-izhx/udever-bloom-1b1,finetuned,multilingual,1065314304,4.261257216,2048,1536,udever,bigscience-bloom-rail-1.0
-izhx/udever-bloom-560m,finetuned,multilingual,559214592,2.236858368,2048,1024,udever,bigscience-bloom-rail-1.0
-laser2,finetuned,multilingual,44615936,0.178463744,,1024,,BSD License
-sentence-transformers/all-MiniLM-L12-v2,,,,,,,,
-sentence-transformers/all-MiniLM-L6-v2,,,,,,,,
-sentence-transformers/distiluse-base-multilingual-cased-v2,finetuned,multilingual,135127808,0.540511232,128,768,siamese network,Apache-2.0
-sentence-transformers/LaBSE,finetuned,multilingual,471517440,1.88606976,256,768,,Apache-2.0
-sentence-transformers/multi-qa-MiniLM-L6-cos-v1,finetuned,multilingual,22713216,0.090852864,512,384,siamese network,
-sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2,finetuned,multilingual,117653760,0.47061504,128,384,siamese network,Apache-2.0
-sentence-transformers/sentence-t5-base,finetuned,multilingual,110218368,0.440873472,512,768,siamese network,Apache-2.0
-sentence-transformers/sentence-t5-large,finetuned,multilingual,335726080,1.34290432,512,768,siamese network,Apache-2.0
-sentence-transformers/sentence-t5-xl,finetuned,multilingual,,,,768,siamese network,Apache-2.0
-sentence-transformers/sentence-t5-xxl,finetuned,multilingual,,,,768,siamese network,Apache-2.0
-shibing624/text2vec-base-multilingual,finetuned,multilingual,117653760,0.47061504,256,384,,Apache-2.0
-text-embedding-ada-002,finetuned,multilingual,,,8191,1536,,Closed source
+bert-base-multilingual-cased,pretrained,multilingual,177853440.0,0.71141376,512.0,768.0,pooling/cls,Apache-2.0
+bert-base-multilingual-uncased,pretrained,multilingual,167356416.0,0.669425664,512.0,768.0,pooling/cls,Apache-2.0
+camembert/camembert-base,pretrained,french,110621952.0,0.442487808,514.0,768.0,pooling/cls,MIT
+camembert/camembert-large,pretrained,french,336661504.0,1.346646016,514.0,1024.0,pooling/cls,MIT
+dangvantuan/sentence-camembert-base,finetuned,french,110621952.0,0.442487808,128.0,768.0,siamese network,MIT / Apache-2.0
+dangvantuan/sentence-camembert-large,finetuned,french,336661504.0,1.346646016,514.0,1024.0,siamese network,MIT / Apache-2.0
+distilbert-base-uncased,,,66362880.0,0.26545152,512.0,768.0,,
+embed-multilingual-light-v3.0,finetuned,multilingual,,,512.0,384.0,,Closed source
+embed-multilingual-v3.0,finetuned,multilingual,,,512.0,1024.0,,Closed source
+flaubert/flaubert_base_cased,pretrained,french,138233088.0,0.552932352,512.0,768.0,pooling/cls,MIT
+flaubert/flaubert_base_uncased,pretrained,french,137321472.0,0.549285888,512.0,768.0,pooling/cls,MIT
+flaubert/flaubert_large_cased,pretrained,french,373214208.0,1.492856832,512.0,1024.0,pooling/cls,MIT
+Geotrend/bert-base-10lang-cased,pretrained,multilingual,137741568.0,0.550966272,512.0,768.0,pooling/cls,Apache-2.0
+Geotrend/bert-base-15lang-cased,pretrained,multilingual,141012480.0,0.56404992,512.0,768.0,pooling/cls,Apache-2.0
+Geotrend/bert-base-25lang-cased,,,151309824.0,0.605239296,512.0,768.0,,
+Geotrend/distilbert-base-25lang-cased,pretrained,multilingual,108190464.0,0.432761856,512.0,768.0,pooling/cls,Apache-2.0
+Geotrend/distilbert-base-en-fr-cased,pretrained,bilingual,68578560.0,0.27431424,512.0,768.0,pooling/cls,Apache-2.0
+Geotrend/distilbert-base-en-fr-es-pt-it-cased,pretrained,multilingual,76067328.0,0.304269312,512.0,768.0,pooling/cls,Apache-2.0
+Geotrend/distilbert-base-fr-cased,,,61734144.0,0.246936576,512.0,768.0,,
+intfloat/multilingual-e5-base,pretrained,multilingual,278043648.0,1.112174592,512.0,768.0,siamese network,MIT
+intfloat/multilingual-e5-large,pretrained,multilingual,559890432.0,2.239561728,512.0,1024.0,siamese network,MIT
+intfloat/multilingual-e5-small,pretrained,multilingual,117653760.0,0.47061504,512.0,384.0,siamese network,MIT
+izhx/udever-bloom-1b1,finetuned,multilingual,1065314304.0,4.261257216,2048.0,1536.0,udever,bigscience-bloom-rail-1.0
+izhx/udever-bloom-560m,finetuned,multilingual,559214592.0,2.236858368,2048.0,1024.0,udever,bigscience-bloom-rail-1.0
+laser2,finetuned,multilingual,44615936.0,0.178463744,,1024.0,,BSD License
+sentence-transformers/all-MiniLM-L12-v2,,,33360000.0,0.13344,128.0,384.0,,
+sentence-transformers/all-MiniLM-L6-v2,,,22713216.0,0.090852864,256.0,384.0,,
+sentence-transformers/distiluse-base-multilingual-cased-v2,finetuned,multilingual,135127808.0,0.540511232,128.0,512.0,siamese network,Apache-2.0
+sentence-transformers/LaBSE,finetuned,multilingual,471517440.0,1.88606976,256.0,768.0,,Apache-2.0
+sentence-transformers/multi-qa-MiniLM-L6-cos-v1,finetuned,multilingual,22713216.0,0.090852864,512.0,384.0,siamese network,
+sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2,finetuned,multilingual,117653760.0,0.47061504,128.0,384.0,siamese network,Apache-2.0
+sentence-transformers/sentence-t5-base,finetuned,multilingual,110218368.0,0.440873472,256.0,768.0,siamese network,Apache-2.0
+sentence-transformers/sentence-t5-large,finetuned,multilingual,335726080.0,1.34290432,256.0,768.0,siamese network,Apache-2.0
+sentence-transformers/sentence-t5-xl,finetuned,multilingual,1241696256.0,4.966785024,256.0,768.0,siamese network,Apache-2.0
+sentence-transformers/sentence-t5-xxl,finetuned,multilingual,,,,768.0,siamese network,Apache-2.0
+shibing624/text2vec-base-multilingual,finetuned,multilingual,117653760.0,0.47061504,256.0,384.0,,Apache-2.0
+text-embedding-ada-002,finetuned,multilingual,,,8191.0,1536.0,,Closed source
 voyage-01,,,,,,,,
 voyage-02,,,,,,,,
-voyage-lite-01,,multilingual,,,4096,1024,,Closed source
-vprelovac/universal-sentence-encoder-multilingual-3,finetuned,multilingual,68927232,0.275708928,,512,pooling/cls,Apache-2.0
-vprelovac/universal-sentence-encoder-multilingual-large-3,finetuned,multilingual,85213184,0.340852736,,512,pooling/cls,Apache-2.0
-xlm-roberta-base,pretrained,multilingual,278043648,1.112174592,514,768,pooling/cls,MIT
-xlm-roberta-large,,,,,,,,
+voyage-lite-01,,multilingual,,,4096.0,1024.0,,Closed source
+vprelovac/universal-sentence-encoder-multilingual-3,finetuned,multilingual,68927232.0,0.275708928,,512.0,pooling/cls,Apache-2.0
+vprelovac/universal-sentence-encoder-multilingual-large-3,finetuned,multilingual,85213184.0,0.340852736,,512.0,pooling/cls,Apache-2.0
+xlm-roberta-base,pretrained,multilingual,278043648.0,1.112174592,514.0,768.0,pooling/cls,MIT
+xlm-roberta-large,,,559890432.0,2.239561728,514.0,1024.0,,
