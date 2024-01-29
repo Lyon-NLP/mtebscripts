@@ -225,7 +225,7 @@ class ResultsParser:
             case "csv":
                 results_df.to_csv("results.csv")
             case "latex":
-                results_df.to_excel("results.tex")
+                results_df.to_latex("results.tex")
         print("Done !")
 
 
