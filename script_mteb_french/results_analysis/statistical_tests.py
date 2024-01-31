@@ -3,6 +3,27 @@ from scipy.stats import friedmanchisquare
 import scikit_posthocs as sp
 import matplotlib.pyplot as plt
 import os
+from argparse import ArgumentParser, Namespace
+
+from results_parser import ResultsParser
+
+
+def parse_args() -> Namespace:
+    """Parse command line arguments
+
+    Returns:
+        (argparse.Namespace): the arguments
+    """
+    parser = ArgumentParser()
+    parser.add_argument("--results_folder", required=True, type=str)
+    parser.add_argument(
+        "--output_folder",
+        type=str,
+        default="./script_mteb_french/results_analysis/statistical_tests_results",
+    )
+    args = parser.parse_args()
+
+    return args
 
 
 def run_statistical_tests(data: pd.DataFrame, output_path: str):
@@ -42,8 +63,20 @@ def run_statistical_tests(data: pd.DataFrame, output_path: str):
 
 
 if __name__ == "__main__":
-    # TODO: use latest csv instead
-    data = pd.read_csv("correlation_analysis/results_table.csv")
+    args = parse_args()
+    rp = ResultsParser()
+    results_df = rp(args.results_folder, return_main_scores=False)
     # this should not be necessary with final csv
-    data = data.fillna(0)
-    run_statistical_tests(data, "results_analysis/")
+    results_df = results_df.fillna(0)
+    results_df = results_df.drop(
+        columns=[
+            ("BitextMining", "DiaBLaBitextMining"),
+            ("BitextMining", "FloresBitextMining"),
+        ]
+    )
+    results_df = results_df.droplevel(0, axis=1)
+    results_df = results_df.reset_index()
+    results_df["model"] = results_df["model"].apply(
+        lambda x: x.replace(args.results_folder, "")
+    )
+    run_statistical_tests(results_df, args.output_folder)
