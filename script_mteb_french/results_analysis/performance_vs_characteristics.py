@@ -38,13 +38,8 @@ def parse_args() -> Namespace:
     return args
 
 
-def perfomance_vs_characteristic_plot(
-    results_df: pd.DataFrame,
-    characteristics_df: pd.DataFrame,
-    target_characteristic: str,
-    characteristic_type: str,
-    output_path: str,
-    mode: str = "avg",
+def prepare_data(
+    results_df: pd.DataFrame, characteristics_df: pd.DataFrame, mode: str = "avg"
 ):
     data = results_df.assign(**results_df.iloc[:, 1:].rank(pct=True))
     data = data.melt(id_vars="model", var_name="dataset", value_name="score")
@@ -53,6 +48,35 @@ def perfomance_vs_characteristic_plot(
         data = data.groupby("model").mean().reset_index()
     data = data.merge(characteristics_df, on="model", how="left")
     data = data.dropna(axis=0, how="any")
+    return data
+
+
+def global_correlation(
+    results_df: pd.DataFrame, characteristics_df: pd.DataFrame, output_path: str
+):
+    data = prepare_data(results_df, characteristics_df, mode="avg")
+    data = data.drop(columns=["model"])
+    # get dummies for categorical variables
+    data = pd.get_dummies(data)
+    score_correlations = data.corrwith(data["score"], method="pearson")
+    # plot correlation heatmap
+    plt.figure(figsize=(10, 8))
+    plt.title("Correlation heatmap")
+    sns.heatmap(score_correlations.to_frame(), annot=True)
+    plt.savefig(
+        os.path.join(output_path, "correlation_heatmap.png"), bbox_inches="tight"
+    )
+
+
+def perfomance_vs_characteristic_plot(
+    results_df: pd.DataFrame,
+    characteristics_df: pd.DataFrame,
+    target_characteristic: str,
+    characteristic_type: str,
+    output_path: str,
+    mode: str = "avg",
+):
+    data = prepare_data(results_df, characteristics_df, mode)
     # Set seaborn style
     sns.set(style="whitegrid")
     plt.figure(figsize=(10, 8))
@@ -88,6 +112,7 @@ if __name__ == "__main__":
     results_df = results_df.dropna(axis=1, how="all").dropna(axis=0, how="any")
     characteristics_df = pd.read_csv(args.characteristics_csv)
     results_df.merge(characteristics_df, on="model", how="left")
+    global_correlation(results_df, characteristics_df, args.output_folder)
     for k, v in CHARACTERISTICS.items():
         output_path = os.path.join(args.output_folder, f"perf_vs_{k}_avg.png")
         perfomance_vs_characteristic_plot(
