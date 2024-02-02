@@ -88,7 +88,7 @@ UNIVERSAL_SENTENCE_ENCODER_MODELS = [
 
 LASER_MODELS = ["laser2"]
 
-VOYAGE_MODELS = ["voyage-02"]
+VOYAGE_MODELS = ["voyage-2", "voyage-code-2"]
 
 OPEN_AI_MODELS = ["text-embedding-ada-002"]
 
