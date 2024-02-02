@@ -3,7 +3,7 @@
   "mteb_dataset_name": "MTOPDomainClassification",
   "mteb_version": "1.1.2.dev0",
   "test": {
-    "evaluation_time": 260.73,
+    "evaluation_time": 3.57,
     "fr": {
       "accuracy": 0.8767616661446915,
       "accuracy_stderr": 0.00931613791325755,

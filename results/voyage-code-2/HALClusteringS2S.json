@@ -3,8 +3,8 @@
   "mteb_dataset_name": "HALClusteringS2S",
   "mteb_version": "1.1.2.dev0",
   "test": {
-    "evaluation_time": 128.03,
-    "v_measure": 0.2484326275705308,
-    "v_measure_std": 0.026185472616426883
+    "evaluation_time": 64.62,
+    "v_measure": 0.27442851283028363,
+    "v_measure_std": 0.03084590276755388
   }
 }

@@ -3,7 +3,7 @@
   "mteb_dataset_name": "STSBenchmarkMultilingualSTS",
   "mteb_version": "1.1.2.dev0",
   "test": {
-    "evaluation_time": 67.83,
+    "evaluation_time": 3.25,
     "fr": {
       "cos_sim": {
         "pearson": 0.7760490179829176,
