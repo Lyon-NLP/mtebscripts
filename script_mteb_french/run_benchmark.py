@@ -63,15 +63,9 @@ SENTENCE_TRANSORMER_MODELS = [
     "sentence-transformers/sentence-t5-large",
     "sentence-transformers/sentence-t5-xl",
     "sentence-transformers/sentence-t5-xxl",
-    "intfloat/e5-mistral-7b-instruct"
+    "intfloat/e5-mistral-7b-instruct",
+    "Wissam42/sentence-croissant-llm-base"
 ]
-
-"""
-SENTENCE_TRANSORMER_MODELS = [
-    "izhx/udever-bloom-3b", # too big
-    "izhx/udever-bloom-7b1", # too big
-]
-"""
 
 # these models max_length is indicated to be 514 whereas the embedding layer actually supports 512
 SENTENCE_TRANSORMER_MODELS_WITH_ERRORS = [
