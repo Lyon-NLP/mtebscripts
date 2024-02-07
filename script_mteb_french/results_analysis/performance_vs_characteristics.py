@@ -5,6 +5,7 @@ import os
 from argparse import ArgumentParser, Namespace
 
 from results_parser import ResultsParser
+import numpy as np
 
 # model,pretrained_or_tuned,multilingual_or_french,number_params,size_gb,seq_len,embedding_dim,model_type,license
 CHARACTERISTICS = {
@@ -59,10 +60,14 @@ def global_correlation(
     data = data.drop(columns=["model"])
     # get dummies for categorical variables
     data = pd.get_dummies(data, prefix='', prefix_sep='')
-    # plot correlation heatmap
+    # compute correlation matrix
+    corr_matrix = data.corr(method="pearson")
+    mask = np.tril(np.ones_like(corr_matrix, dtype=bool))
+    corr_matrix = corr_matrix.where(mask)
+    # plot correlation heatmap 
     plt.figure(figsize=(12, 10))
     plt.title("Correlation heatmap")
-    sns.heatmap(data.corr(method="pearson"), center=0, cmap="coolwarm")
+    sns.heatmap(corr_matrix, center=0, cmap="coolwarm")
     plt.savefig(
         os.path.join(output_path, "correlation_heatmap.png"), bbox_inches="tight"
     )
