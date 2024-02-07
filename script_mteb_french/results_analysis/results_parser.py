@@ -8,7 +8,8 @@ import pandas as pd
 # TODO: read those two info from MTEB tasks
 DATASET_KEYS = {
     "DiaBLaBitextMining": ["fr-en"],
-    "FloresBitextMining": ["fra_Latn-eng_Latn", "eng_Latn-fra_Latn"]
+    "FloresBitextMining": ["fra_Latn-eng_Latn", "eng_Latn-fra_Latn"],
+    "MasakhaNEWSClassification": ["fra"]
 }
 DATASET_SPLIT = {
     "FloresBitextMining": "dev",
@@ -164,13 +165,13 @@ class ResultsParser:
             for task_name, task_results in model_results.items():
                 if task_name in self.tasks_type_map:
                     task_type = self.tasks_type_map[task_name]
-                    if task_type == "BitextMining":
+                    if task_name in DATASET_KEYS:
                         subkeys = DATASET_KEYS[task_name]
                     else:
                         subkeys = [None]
                     for subkey in subkeys:
                         result, result_name_score = self._get_task_score(task_name, task_results, subkey, DATASET_SPLIT.get(task_name))
-                        dataset_name = f"{task_name}_{subkey}" if subkey else task_name
+                        dataset_name = f"{task_name}_{subkey}" if subkey and task_type == "BitextMining" else task_name
                         self.tasks_type_map[dataset_name] = task_type
                         results_records.append({'model': model_name, 'dataset': dataset_name, 'result': result})
                         tasks_main_scores_subset.append(result_name_score)
