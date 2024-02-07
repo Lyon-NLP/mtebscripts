@@ -4,12 +4,12 @@ import json
 from argparse import ArgumentParser, Namespace
 from mteb.abstasks import AbsTask
 import pandas as pd
+from mteb import MTEB
 
-# TODO: read those two info from MTEB tasks
 DATASET_KEYS = {
     "DiaBLaBitextMining": ["fr-en"],
-    "FloresBitextMining": ["fra_Latn-eng_Latn", "eng_Latn-fra_Latn"],
-    "MasakhaNEWSClassification": ["fra"]
+    "FloresBitextMining": MTEB(tasks=['FloresBitextMining'], task_langs=['fr', 'en']).tasks[0].langs,
+    "MasakhaNEWSClassification": MTEB(tasks=['MasakhaNEWSClassification'], task_langs=['fr']).tasks[0].langs
 }
 DATASET_SPLIT = {
     "FloresBitextMining": "dev",
@@ -128,6 +128,7 @@ class ResultsParser:
         key = subkey if subkey else self.lang
         selected_split = split if split else self.split
         result = task_results[selected_split]
+        print(result)
         if key in result:
             result = result[key]
         if task_name in self.tasks_main_scores_map:
