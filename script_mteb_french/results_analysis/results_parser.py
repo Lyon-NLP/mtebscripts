@@ -5,6 +5,16 @@ from argparse import ArgumentParser, Namespace
 from mteb.abstasks import AbsTask
 import pandas as pd
 
+# TODO: read those two info from MTEB tasks
+DATASET_KEYS = {
+    "DiaBLaBitextMining": ["fr-en"],
+    "FloresBitextMining": ["fra_Latn-eng_Latn", "eng_Latn-fra_Latn"]
+}
+DATASET_SPLIT = {
+    "FloresBitextMining": "dev",
+}
+
+
 class ResultsParser:
     """A class to parse the results of MTEB evaluations
     """
@@ -99,7 +109,7 @@ class ResultsParser:
         return tasks_attribute
 
 
-    def _get_task_score(self, task_name:str, task_type:str, task_results:str) -> tuple[float, tuple[str, str]]:
+    def _get_task_score(self, task_name:str, task_results:str, subkey:str|None = None, split: str|None = None) -> tuple[float, tuple[str, str]]:
         """Considering a task, gets its results
 
         Args:
@@ -112,30 +122,27 @@ class ResultsParser:
             result_name_score (tuple[str, str]): the name of the task and name of the main scoring metric 
                 for that task
         """
-        match task_type:
-            case "BitextMining":
-                print("Results of task BitextMining must be treated separately")
-                return None, (task_name, None)
-            case other:
-                result = task_results[self.split]
-                if self.lang in result:
-                    result = result[self.lang]
-                if task_name in self.tasks_main_scores_map:
-                    main_score = self.tasks_main_scores_map[task_name]
-                    if main_score in result:
-                        result = result[main_score]
-                        result_name_score = (task_name, main_score)
-                    elif main_score == "cosine_spearman":
-                        result = result['cos_sim']['spearman']
-                        result_name_score = (task_name, "cosine_spearman")
-                    elif main_score == "ap":
-                        result = result['cos_sim']['ap']
-                        result_name_score = (task_name, "cosine_ap")
-                    else:
-                        result = None
-                        result_name_score = (task_name, None)
-                else:
-                    warnings.warn(f"Task name '{task_name}' not found in MTEB module.")
+        key = subkey if subkey else self.lang
+        selected_split = split if split else self.split
+        result = task_results[selected_split]
+        if key in result:
+            result = result[key]
+        if task_name in self.tasks_main_scores_map:
+            main_score = self.tasks_main_scores_map[task_name]
+            if main_score in result:
+                result = result[main_score]
+                result_name_score = (task_name, main_score)
+            elif main_score == "cosine_spearman":
+                result = result['cos_sim']['spearman']
+                result_name_score = (task_name, "cosine_spearman")
+            elif main_score == "ap":
+                result = result['cos_sim']['ap']
+                result_name_score = (task_name, "cosine_ap")
+            else:
+                result = None
+                result_name_score = (task_name, None)
+        else:
+            warnings.warn(f"Task name '{task_name}' not found in MTEB module.")
 
         return result, result_name_score
 
@@ -157,9 +164,16 @@ class ResultsParser:
             for task_name, task_results in model_results.items():
                 if task_name in self.tasks_type_map:
                     task_type = self.tasks_type_map[task_name]
-                    result, result_name_score = self._get_task_score(task_name, task_type, task_results)
-                    results_records.append({'model': model_name, 'dataset': task_name, 'result': result})
-                    tasks_main_scores_subset.append(result_name_score)
+                    if task_type == "BitextMining":
+                        subkeys = DATASET_KEYS[task_name]
+                    else:
+                        subkeys = [None]
+                    for subkey in subkeys:
+                        result, result_name_score = self._get_task_score(task_name, task_results, subkey, DATASET_SPLIT.get(task_name))
+                        dataset_name = f"{task_name}_{subkey}" if subkey else task_name
+                        self.tasks_type_map[dataset_name] = task_type
+                        results_records.append({'model': model_name, 'dataset': dataset_name, 'result': result})
+                        tasks_main_scores_subset.append(result_name_score)
                 else:
                     warnings.warn(f"Task name '{task_name}' not found in MTEB module.")
         results_df = pd.DataFrame.from_records(results_records)
