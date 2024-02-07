@@ -45,6 +45,7 @@ SENTENCE_TRANSORMER_MODELS = [
     "sentence-transformers/LaBSE",
     "sentence-transformers/multi-qa-MiniLM-L6-cos-v1",
     "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+    "sentence-transformers/paraphrase-multilingual-mpnet-base-v2",
     "intfloat/multilingual-e5-base",
     "intfloat/multilingual-e5-large",
     "intfloat/multilingual-e5-small",
