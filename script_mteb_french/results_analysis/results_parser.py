@@ -15,6 +15,8 @@ DATASET_SPLIT = {
     "FloresBitextMining": "dev",
 }
 
+MODELS_TO_IGNORE = ['voyage-01', 'voyage-02', 'voyage-lite-01']
+
 
 class ResultsParser:
     """A class to parse the results of MTEB evaluations
@@ -162,21 +164,23 @@ class ResultsParser:
         results_records = []
         tasks_main_scores_subset = []
         for model_name, model_results in result_dict.items():
-            for task_name, task_results in model_results.items():
-                if task_name in self.tasks_type_map:
-                    task_type = self.tasks_type_map[task_name]
-                    if task_name in DATASET_KEYS:
-                        subkeys = DATASET_KEYS[task_name]
+            model_ignore = any([x in model_name for x in MODELS_TO_IGNORE])
+            if not model_ignore:
+                for task_name, task_results in model_results.items():
+                    if task_name in self.tasks_type_map:
+                        task_type = self.tasks_type_map[task_name]
+                        if task_name in DATASET_KEYS:
+                            subkeys = DATASET_KEYS[task_name]
+                        else:
+                            subkeys = [None]
+                        for subkey in subkeys:
+                            result, result_name_score = self._get_task_score(task_name, task_results, subkey, DATASET_SPLIT.get(task_name))
+                            dataset_name = f"{task_name}_{subkey}" if subkey and task_type == "BitextMining" else task_name
+                            self.tasks_type_map[dataset_name] = task_type
+                            results_records.append({'model': model_name, 'dataset': dataset_name, 'result': result})
+                            tasks_main_scores_subset.append(result_name_score)
                     else:
-                        subkeys = [None]
-                    for subkey in subkeys:
-                        result, result_name_score = self._get_task_score(task_name, task_results, subkey, DATASET_SPLIT.get(task_name))
-                        dataset_name = f"{task_name}_{subkey}" if subkey and task_type == "BitextMining" else task_name
-                        self.tasks_type_map[dataset_name] = task_type
-                        results_records.append({'model': model_name, 'dataset': dataset_name, 'result': result})
-                        tasks_main_scores_subset.append(result_name_score)
-                else:
-                    warnings.warn(f"Task name '{task_name}' not found in MTEB module.")
+                        warnings.warn(f"Task name '{task_name}' not found in MTEB module.")
         results_df = pd.DataFrame.from_records(results_records)
         results_pivot = results_df.pivot(index='model', columns='dataset', values='result')
         tasks_main_scores_subset = dict(tasks_main_scores_subset)
