@@ -27,7 +27,7 @@ def parse_args() -> Namespace:
 
 
 def run_statistical_tests(data: pd.DataFrame, output_path: str):
-    results_lists = list(data.values[:, 1:])
+    results_lists = list(data.fillna(0).values[:, 1:])
     friedman_stats = friedmanchisquare(*results_lists)
     print(f"Running friedman test on {len(results_lists)} models...")
     if friedman_stats.pvalue < 0.05:
@@ -35,6 +35,7 @@ def run_statistical_tests(data: pd.DataFrame, output_path: str):
             f"There is a significant difference between the models (p-value: {friedman_stats.pvalue}). Running post-hoc tests..."
         )
         data_melted = data.melt(id_vars="model", var_name="dataset", value_name="score")
+        data_melted = data_melted.dropna(axis=0, how='any')
         avg_rank = (
             data_melted.groupby("dataset")
             .score.rank(pct=True, ascending=False)
@@ -67,17 +68,9 @@ if __name__ == "__main__":
     args = parse_args()
     rp = ResultsParser()
     results_df = rp(args.results_folder, return_main_scores=False)
-    results_df = results_df.drop(
-        columns=[
-            ("BitextMining", "DiaBLaBitextMining"),
-            ("BitextMining", "FloresBitextMining"),
-        ]
-    )
     results_df = results_df.droplevel(0, axis=1)
     results_df = results_df.reset_index()
     results_df["model"] = results_df["model"].apply(
         lambda x: x.replace(args.results_folder, "")
     )
-    # this should not be necessary with final csv
-    results_df = results_df.dropna(axis=1, how='all').dropna(axis=0, how='any')
     run_statistical_tests(results_df, args.output_folder)
