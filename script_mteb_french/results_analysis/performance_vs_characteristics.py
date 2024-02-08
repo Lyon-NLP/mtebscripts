@@ -43,6 +43,7 @@ def parse_args() -> Namespace:
 def prepare_data(
     results_df: pd.DataFrame, characteristics_df: pd.DataFrame, mode: str = "avg"
 ):
+    results_df = results_df.fillna(0)
     data = results_df.assign(**results_df.iloc[:, 1:].rank(pct=True))
     data = data.melt(id_vars="model", var_name="dataset", value_name="score")
     data = data[["model", "score"]]
@@ -102,19 +103,11 @@ if __name__ == "__main__":
     args = parse_args()
     rp = ResultsParser()
     results_df = rp(args.results_folder, return_main_scores=False)
-    results_df = results_df.drop(
-        columns=[
-            ("BitextMining", "DiaBLaBitextMining"),
-            ("BitextMining", "FloresBitextMining"),
-        ]
-    )
     results_df = results_df.droplevel(0, axis=1)
     results_df = results_df.reset_index()
     results_df["model"] = results_df["model"].apply(
         lambda x: x.replace(args.results_folder, "")
     )
-    # this should not be necessary with final csv
-    results_df = results_df.dropna(axis=1, how="all").dropna(axis=0, how="any")
     characteristics_df = pd.read_csv(args.characteristics_csv)
     global_correlation(results_df, characteristics_df, args.output_folder)
     for k, v in CHARACTERISTICS.items():
