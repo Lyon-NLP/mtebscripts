@@ -20,6 +20,21 @@ CHARACTERISTICS = {
     "tuned_on_sentence_sim": "numerical",
 }
 
+COLS_TO_KEEP_GLOBAL_CORRELATION = {
+    "score": "Model ranking",
+    "finetuned": "Finetuned vs pretrained",
+    "number_params": "Model number of parameters",
+    "seq_len": "Max sequence length",
+    "embedding_dim": "Embedding dimension",
+    "tuned_on_sentence_sim": "Tuned for sentence similarity",
+    "bilingual": "Bilingual",
+    "english": "English",
+    "english_plus": "English tuned on other languages",
+    "french": "French",
+    "multilingual": "Multilingual",
+    "Closed source": "Closed source",
+}
+
 
 def parse_args() -> Namespace:
     """Parse command line arguments
@@ -49,7 +64,6 @@ def prepare_data(
     if mode == "avg":
         data = data.groupby("model").mean().reset_index()
     data = data.merge(characteristics_df, on="model", how="left")
-    data = data.dropna(axis=0, how="any")
     return data
 
 
@@ -59,12 +73,14 @@ def global_correlation(
     data = prepare_data(results_df, characteristics_df, mode="avg")
     data = data.drop(columns=["model"])
     # get dummies for categorical variables
-    data = pd.get_dummies(data, prefix='', prefix_sep='')
+    data = pd.get_dummies(data, prefix="", prefix_sep="")
+    data = data[list(COLS_TO_KEEP_GLOBAL_CORRELATION.keys())]
+    data = data.rename(columns=COLS_TO_KEEP_GLOBAL_CORRELATION)
     # compute correlation matrix
     corr_matrix = data.corr(method="pearson")
     mask = np.tril(np.ones_like(corr_matrix, dtype=bool))
     corr_matrix = corr_matrix.where(mask)
-    # plot correlation heatmap 
+    # plot correlation heatmap
     plt.figure(figsize=(12, 10))
     plt.title("Correlation heatmap")
     sns.heatmap(corr_matrix, center=0, cmap="coolwarm")
@@ -84,6 +100,7 @@ def perfomance_vs_characteristic_plot(
     data = prepare_data(results_df, characteristics_df, mode)
     # Set seaborn style
     sns.set(style="whitegrid")
+    sns.set_palette("Set2")
     plt.figure(figsize=(10, 8))
     plt.title(f"Performance vs {target_characteristic}")
     plt.xlabel(target_characteristic)
