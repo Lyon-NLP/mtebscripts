@@ -60,7 +60,7 @@ def parse_args() -> Namespace:
     parser.add_argument(
         "--output_folder",
         type=str,
-        default="./script_mteb_french/results_analysis/performance_vs_characteristics_plots",
+        default="./analyses_outputs/performance_vs_characteristics",
     )
     args = parser.parse_args()
 
@@ -76,6 +76,7 @@ def prepare_data(
     if mode == "avg":
         data = data.groupby("model").mean().reset_index()
     data = data.merge(characteristics_df, on="model", how="left")
+
     return data
 
 
@@ -131,13 +132,18 @@ def perfomance_vs_characteristic_plot(
 
 if __name__ == "__main__":
     args = parse_args()
+
+    if not os.path.exists(args.output_folder):
+        os.makedirs(args.output_folder)
+
     rp = ResultsParser()
     results_df = rp(args.results_folder, return_main_scores=False)
     results_df = results_df.droplevel(0, axis=1)
     results_df = results_df.reset_index()
     results_df["model"] = results_df["model"].apply(
-        lambda x: x.replace(args.results_folder, "")
+        lambda x: x.replace(args.results_folder, "").replace("\\", "/")
     )
+
     characteristics_df = pd.read_csv(args.characteristics_csv)
     global_correlation(results_df, characteristics_df, args.output_folder)
     for k, v in CHARACTERISTICS.items():
@@ -145,7 +151,3 @@ if __name__ == "__main__":
         perfomance_vs_characteristic_plot(
             results_df, characteristics_df, k, v, output_path, mode="avg"
         )
-        # output_path = os.path.join(args.output_folder, f"perf_vs_{k}_all.png")
-        # perfomance_vs_characteristic_plot(
-        #     results_df, characteristics_df, k, v, output_path, mode="all"
-        # )
