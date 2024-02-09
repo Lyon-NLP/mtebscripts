@@ -71,6 +71,6 @@ if __name__ == "__main__":
     results_df = results_df.droplevel(0, axis=1)
     results_df = results_df.reset_index()
     results_df["model"] = results_df["model"].apply(
-        lambda x: x.replace(args.results_folder, "")
+        lambda x: os.path.basename(x)
     )
     run_statistical_tests(results_df, args.output_folder)
