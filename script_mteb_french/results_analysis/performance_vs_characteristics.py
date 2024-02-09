@@ -20,6 +20,18 @@ CHARACTERISTICS = {
     "tuned_on_sentence_sim": "numerical",
 }
 
+CHARACTERISTICS_DISPLAY_NAMES = {
+    "finetuned": "Finetuned vs pretrained",
+    "multilingual_or_french": "Language",
+    "number_params": "Model number of parameters",
+    "size_gb": "Model size",
+    "seq_len": "Max sequence length",
+    "embedding_dim": "Embedding dimension",
+    "model_type": "Model type",
+    "license": "License",
+    "tuned_on_sentence_sim": "Tuned for sentence similarity",
+}
+
 COLS_TO_KEEP_GLOBAL_CORRELATION = {
     "score": "Model ranking",
     "finetuned": "Finetuned vs pretrained",
@@ -98,13 +110,15 @@ def perfomance_vs_characteristic_plot(
     mode: str = "avg",
 ):
     data = prepare_data(results_df, characteristics_df, mode)
+    data[target_characteristic] = data[target_characteristic].apply(lambda x: COLS_TO_KEEP_GLOBAL_CORRELATION[x] if x in COLS_TO_KEEP_GLOBAL_CORRELATION else x)
     # Set seaborn style
     sns.set(style="whitegrid")
     sns.set_palette("Set2")
     plt.figure(figsize=(10, 8))
-    plt.title(f"Performance vs {target_characteristic}")
-    plt.xlabel(target_characteristic)
-    plt.ylabel("Score")
+    charac_display_name = CHARACTERISTICS_DISPLAY_NAMES[target_characteristic]
+    plt.title(f"Model ranking vs {charac_display_name.lower()}")
+    plt.xlabel(charac_display_name)
+    plt.ylabel("Model ranking")
     if characteristic_type == "categorical":
         sns.boxplot(data=data, x=target_characteristic, y="score")
     elif characteristic_type == "numerical":
