@@ -49,13 +49,14 @@ def run_statistical_tests(data: pd.DataFrame, output_path: str):
             group_col="model",
             y_col="score",
         )
-        plt.figure(figsize=(10, 8))
+        plt.figure(figsize=(12, 15))
+        plt.rcParams.update({'font.size': 15})
         plt.title("Post hoc conover friedman tests")
         sp.sign_plot(detailed_test_results)
         plt.savefig(
             os.path.join(output_path, "conover_friedman.png"), bbox_inches="tight"
         )
-        plt.figure(figsize=(10, 6))
+        plt.figure(figsize=(12, 8))
         plt.title("Critical difference diagram of average score ranks")
         sp.critical_difference_diagram(avg_rank, detailed_test_results)
         plt.savefig(
