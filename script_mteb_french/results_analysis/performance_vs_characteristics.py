@@ -43,7 +43,6 @@ def parse_args() -> Namespace:
 def prepare_data(
     results_df: pd.DataFrame, characteristics_df: pd.DataFrame, mode: str = "avg"
 ):
-    results_df = results_df.fillna(0)
     data = results_df.assign(**results_df.iloc[:, 1:].rank(pct=True))
     data = data.melt(id_vars="model", var_name="dataset", value_name="score")
     data = data[["model", "score"]]
