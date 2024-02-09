@@ -41,7 +41,7 @@ COLS_TO_KEEP_GLOBAL_CORRELATION = {
     "tuned_on_sentence_sim": "Tuned for sentence similarity",
     "bilingual": "Bilingual",
     "english": "English",
-    "english_plus": "English tuned on other languages",
+    "english_plus": "English +\ntuning on\nother languages",
     "french": "French",
     "multilingual": "Multilingual",
     "Closed source": "Closed source",
@@ -112,21 +112,26 @@ def perfomance_vs_characteristic_plot(
 ):
     data = prepare_data(results_df, characteristics_df, mode)
     data[target_characteristic] = data[target_characteristic].apply(lambda x: COLS_TO_KEEP_GLOBAL_CORRELATION[x] if x in COLS_TO_KEEP_GLOBAL_CORRELATION else x)
-    # Set seaborn style
+    
     sns.set(style="whitegrid")
     sns.set_palette("Set2")
     plt.figure(figsize=(10, 8))
     charac_display_name = CHARACTERISTICS_DISPLAY_NAMES[target_characteristic]
-    plt.title(f"Model ranking vs {charac_display_name.lower()}")
-    plt.xlabel(charac_display_name)
-    plt.ylabel("Model ranking")
+    plt.title(f"Model perfromance vs {charac_display_name.lower()}", fontsize=15)
+    plt.xlabel(charac_display_name, fontsize=15)
+    plt.ylabel("Average performance", fontsize=15)
     if characteristic_type == "categorical":
         sns.boxplot(data=data, x=target_characteristic, y="score")
+        plt.xticks(fontsize=15)
+        plt.yticks(fontsize=15)
     elif characteristic_type == "numerical":
         sns.scatterplot(data=data, x=target_characteristic, y="score")
         plt.xscale("log")
+        plt.xticks(fontsize=15)
+        plt.yticks(fontsize=15)
     else:
         raise ValueError(f"Unknown characteristic type: {characteristic_type}")
+
     plt.savefig(output_path, bbox_inches="tight")
 
 
@@ -141,10 +146,13 @@ if __name__ == "__main__":
     results_df = results_df.droplevel(0, axis=1)
     results_df = results_df.reset_index()
     results_df["model"] = results_df["model"].apply(
-        lambda x: x.replace(args.results_folder, "").replace("\\", "/")
+        lambda x: os.path.basename(x)
     )
 
     characteristics_df = pd.read_csv(args.characteristics_csv)
+    characteristics_df["model"] = characteristics_df["model"].apply(
+        lambda x: os.path.basename(x)
+    )
     global_correlation(results_df, characteristics_df, args.output_folder)
     for k, v in CHARACTERISTICS.items():
         output_path = os.path.join(args.output_folder, f"perf_vs_{k}_avg.png")

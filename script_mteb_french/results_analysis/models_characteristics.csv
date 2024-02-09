@@ -6,8 +6,8 @@ camembert/camembert-large,0,french,336661504.0,1.346646016,514.0,1024.0,pooling,
 dangvantuan/sentence-camembert-base,1,french,110621952.0,0.442487808,128.0,768.0,contrastive,Apache-2.0,1
 dangvantuan/sentence-camembert-large,1,french,336661504.0,1.346646016,514.0,1024.0,contrastive,Apache-2.0,1
 distilbert-base-uncased,0,english,66362880.0,0.26545152,512.0,768.0,pooling,Apache-2.0,0
-embed-multilingual-light-v3.0,1,multilingual,,,512.0,384.0,,Closed source,
-embed-multilingual-v3.0,1,multilingual,,,512.0,1024.0,,Closed source,
+Cohere-embed-multilingual-light-v3.0,1,multilingual,,,512.0,384.0,,Closed source,
+Cohere-embed-multilingual-v3.0,1,multilingual,,,512.0,1024.0,,Closed source,
 flaubert/flaubert_base_cased,0,french,138233088.0,0.552932352,512.0,768.0,pooling,MIT,0
 flaubert/flaubert_base_uncased,0,french,137321472.0,0.549285888,512.0,768.0,pooling,MIT,0
 flaubert/flaubert_large_cased,0,french,373214208.0,1.492856832,512.0,1024.0,pooling,MIT,0
