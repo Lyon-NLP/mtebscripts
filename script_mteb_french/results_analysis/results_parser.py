@@ -238,6 +238,9 @@ class ResultsParser:
         if output_format not in ["excel", "latex", "csv"]:
             raise ValueError(f"'format' argument should be either excel, latex or csv, not {format}")
         
+        if not os.path.exists(output_folder):
+            os.makedirs(output_folder)
+        
         match output_format:
             case "csv":
                 results_df.style.clear()

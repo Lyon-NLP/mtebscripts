@@ -19,7 +19,7 @@ def parse_args() -> Namespace:
     parser.add_argument(
         "--output_folder",
         type=str,
-        default="./script_mteb_french/results_analysis/statistical_tests_results",
+        default="./analyses_outputs/statistical_tests",
     )
     args = parser.parse_args()
 
@@ -66,6 +66,10 @@ def run_statistical_tests(data: pd.DataFrame, output_path: str):
 
 if __name__ == "__main__":
     args = parse_args()
+
+    if not os.path.exists(args.output_folder):
+        os.makedirs(args.output_folder)
+
     rp = ResultsParser()
     results_df = rp(args.results_folder, return_main_scores=False)
     results_df = results_df.droplevel(0, axis=1)
