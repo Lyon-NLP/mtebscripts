@@ -30,7 +30,7 @@ if __name__ == "__main__":
     results_df = rp(args.results_folder, return_main_scores=False)
     results_df = results_df.droplevel(0, axis=1)
     results_df.index = results_df.index.map(
-        lambda x: x.replace(args.results_folder, "")
+        lambda x: x.split('/')[-1]
     )
     print(results_df.shape)
     # Prepare output folder
@@ -66,6 +66,7 @@ if __name__ == "__main__":
     spearman_corr_matrix_models = (spearman_corr_matrix_models.fillna(0) * mask).map(
         lambda x: np.nan if x == 0 else x
     )
+    sns.set(font_scale=1.4)
     sns.heatmap(spearman_corr_matrix_models, fmt=".2f", linewidths=0.5, cmap="coolwarm")
     plt.title("Model Correlation Heatmap (Spearman)")
     plt.savefig(
