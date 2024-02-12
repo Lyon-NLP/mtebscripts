@@ -62,6 +62,12 @@ def parse_args() -> Namespace:
         type=str,
         default="./analyses_outputs/performance_vs_characteristics",
     )
+    parser.add_argument(
+        "--output_format",
+        type=str,
+        default="pdf",
+        choices=["pdf", "png"],
+    )
     args = parser.parse_args()
 
     return args
@@ -81,7 +87,8 @@ def prepare_data(
 
 
 def global_correlation(
-    results_df: pd.DataFrame, characteristics_df: pd.DataFrame, output_path: str
+    results_df: pd.DataFrame, characteristics_df: pd.DataFrame,
+    output_path: str, output_format:str="pdf",
 ):
     data = prepare_data(results_df, characteristics_df, mode="avg")
     data = data.drop(columns=["model"])
@@ -98,7 +105,7 @@ def global_correlation(
     plt.title("Correlation heatmap")
     sns.heatmap(corr_matrix, center=0, cmap="coolwarm")
     plt.savefig(
-        os.path.join(output_path, "correlation_heatmap.png"), bbox_inches="tight"
+        os.path.join(output_path, f"correlation_heatmap.{output_format}"), bbox_inches="tight"
     )
 
 
@@ -153,9 +160,9 @@ if __name__ == "__main__":
     characteristics_df["model"] = characteristics_df["model"].apply(
         lambda x: os.path.basename(x)
     )
-    global_correlation(results_df, characteristics_df, args.output_folder)
+    global_correlation(results_df, characteristics_df, args.output_folder, args.output_format)
     for k, v in CHARACTERISTICS.items():
-        output_path = os.path.join(args.output_folder, f"perf_vs_{k}_avg.png")
+        output_path = os.path.join(args.output_folder, f"perf_vs_{k}_avg.{args.output_format}")
         perfomance_vs_characteristic_plot(
             results_df, characteristics_df, k, v, output_path, mode="avg"
         )

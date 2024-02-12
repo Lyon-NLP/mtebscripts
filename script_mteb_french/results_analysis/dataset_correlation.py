@@ -1,4 +1,3 @@
-import json
 import os
 from argparse import ArgumentParser, Namespace
 import matplotlib.pyplot as plt
@@ -17,6 +16,12 @@ def parse_args() -> Namespace:
     parser = ArgumentParser()
     parser.add_argument("--results_folder", required=True, type=str)
     parser.add_argument("--output_folder", type=str, default="./analyses_outputs/results_correlations")
+    parser.add_argument(
+        "--output_format",
+        type=str,
+        default="pdf",
+        choices=["pdf", "png"],
+    )
     args = parser.parse_args()
 
     return args
@@ -30,9 +35,8 @@ if __name__ == "__main__":
     results_df = rp(args.results_folder, return_main_scores=False)
     results_df = results_df.droplevel(0, axis=1)
     results_df.index = results_df.index.map(
-        lambda x: x.replace(args.results_folder, "")
+        lambda x: os.path.basename(x)
     )
-    print(results_df.shape)
     # Prepare output folder
     if not os.path.exists(args.output_folder):
         os.makedirs(args.output_folder)
@@ -51,12 +55,11 @@ if __name__ == "__main__":
     )
     plt.title("Dataset Correlation Heatmap (Spearman)")
     plt.savefig(
-        os.path.join(args.output_folder, "spearman_corr_heatmap_datasets.png"),
+        os.path.join(args.output_folder, f"spearman_corr_heatmap_datasets.{args.output_format}"),
         bbox_inches="tight",
     )
     # Model correlations
     transposed_results_df = results_df.transpose()
-    print(transposed_results_df)
     spearman_corr_matrix_models = transposed_results_df.corr(method="spearman")
     spearman_corr_matrix_models.to_csv(
         os.path.join(args.output_folder, "spearman_corr_matrix_models.csv")
@@ -69,6 +72,6 @@ if __name__ == "__main__":
     sns.heatmap(spearman_corr_matrix_models, fmt=".2f", linewidths=0.5, cmap="coolwarm")
     plt.title("Model Correlation Heatmap (Spearman)")
     plt.savefig(
-        os.path.join(args.output_folder, "spearman_corr_heatmap_models.png"),
+        os.path.join(args.output_folder, f"spearman_corr_heatmap_models.{args.output_format}"),
         bbox_inches="tight",
     )

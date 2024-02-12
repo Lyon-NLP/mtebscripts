@@ -21,12 +21,18 @@ def parse_args() -> Namespace:
         type=str,
         default="./analyses_outputs/statistical_tests",
     )
+    parser.add_argument(
+        "--output_format",
+        type=str,
+        default="pdf",
+        choices=["pdf", "png"],
+    )
     args = parser.parse_args()
 
     return args
 
 
-def run_statistical_tests(data: pd.DataFrame, output_path: str):
+def run_statistical_tests(data: pd.DataFrame, output_path: str, output_format:str = "pdf"):
     results_lists = list(data.fillna(0).values[:, 1:])
     friedman_stats = friedmanchisquare(*results_lists)
     print(f"Running friedman test on {len(results_lists)} models...")
@@ -54,13 +60,13 @@ def run_statistical_tests(data: pd.DataFrame, output_path: str):
         plt.title("Post hoc conover friedman tests")
         sp.sign_plot(detailed_test_results)
         plt.savefig(
-            os.path.join(output_path, "conover_friedman.png"), bbox_inches="tight"
+            os.path.join(output_path, f"conover_friedman.{output_format}"), bbox_inches="tight"
         )
         plt.figure(figsize=(12, 8))
         plt.title("Critical difference diagram of average score ranks")
         sp.critical_difference_diagram(avg_rank, detailed_test_results)
         plt.savefig(
-            os.path.join(output_path, "critical_difference_diagram.png"),
+            os.path.join(output_path, f"critical_difference_diagram.{output_format}"),
             bbox_inches="tight",
         )
 
@@ -78,4 +84,4 @@ if __name__ == "__main__":
     results_df["model"] = results_df["model"].apply(
         lambda x: os.path.basename(x)
     )
-    run_statistical_tests(results_df, args.output_folder)
+    run_statistical_tests(results_df, args.output_folder, args.output_format)
