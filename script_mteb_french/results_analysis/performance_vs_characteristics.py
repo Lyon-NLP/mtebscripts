@@ -97,13 +97,15 @@ def global_correlation(
     data = data[list(COLS_TO_KEEP_GLOBAL_CORRELATION.keys())]
     data = data.rename(columns=COLS_TO_KEEP_GLOBAL_CORRELATION)
     # compute correlation matrix
-    corr_matrix = data.corr(method="pearson")
+    corr_matrix = data.corr(method="spearman")
+    corr_matrix.map(lambda x:round(x,3)).to_csv(os.path.join(output_path, "correlation_matrix.csv"))
     mask = np.tril(np.ones_like(corr_matrix, dtype=bool))
     corr_matrix = corr_matrix.where(mask)
     # plot correlation heatmap
-    plt.figure(figsize=(12, 10))
-    plt.title("Correlation heatmap")
-    sns.heatmap(corr_matrix, center=0, cmap="coolwarm")
+    plt.figure(figsize=(16, 16))
+    with sns.plotting_context("notebook", font_scale=1.4):
+            sns.heatmap(corr_matrix, center=0, fmt=.6, cmap="coolwarm")
+    plt.rcParams.update({'font.size': 16})
     plt.savefig(
         os.path.join(output_path, f"correlation_heatmap.{output_format}"), bbox_inches="tight"
     )

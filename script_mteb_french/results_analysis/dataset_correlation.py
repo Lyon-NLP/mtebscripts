@@ -69,7 +69,10 @@ if __name__ == "__main__":
     spearman_corr_matrix_models = (spearman_corr_matrix_models.fillna(0) * mask).map(
         lambda x: np.nan if x == 0 else x
     )
-    sns.heatmap(spearman_corr_matrix_models, fmt=".2f", linewidths=0.5, cmap="coolwarm")
+    with sns.plotting_context("notebook", font_scale=1.4):
+        sns.heatmap(spearman_corr_matrix_models, fmt=".2f", linewidths=0.5, cmap="coolwarm")
+    #set plt font size
+    plt.rcParams.update({'font.size': 16})
     plt.title("Model Correlation Heatmap (Spearman)")
     plt.savefig(
         os.path.join(args.output_folder, f"spearman_corr_heatmap_models.{args.output_format}"),

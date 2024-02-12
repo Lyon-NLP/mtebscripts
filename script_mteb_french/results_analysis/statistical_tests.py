@@ -63,7 +63,6 @@ def run_statistical_tests(data: pd.DataFrame, output_path: str, output_format:st
             os.path.join(output_path, f"conover_friedman.{output_format}"), bbox_inches="tight"
         )
         plt.figure(figsize=(12, 8))
-        plt.title("Critical difference diagram of average score ranks")
         sp.critical_difference_diagram(avg_rank, detailed_test_results)
         plt.savefig(
             os.path.join(output_path, f"critical_difference_diagram.{output_format}"),
