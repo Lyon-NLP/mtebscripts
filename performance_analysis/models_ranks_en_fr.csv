@@ -1,0 +1,16 @@
+model,rank_fr,avg_perf_fr,rank_en,avg_perf_en
+text-embedding-ada-002,1,69.51,4,60.99
+sentence-t5-xxl,2,66.26,6,59.51
+multilingual-e5-large,3,65.30,3,61.50
+embed-multilingual-v3.0,4,65.01,2,64.47
+multilingual-e5-base,5,64.62,7,59.45
+sentence-t5-xl,6,64.55,10,57.87
+multilingual-e5-small,7,63.52,9,57.87
+embed-multilingual-light-v3.0,8,62.91,5,60.08
+sentence-t5-large,9,62.48,11,57.06
+LaBSE,10,60.77,14,45.21
+sentence-t5-base,11,59.73,13,55.27
+laser2,12,53.95,15,34.95
+e5-mistral-7b-instruct,13,52.11,1,66.63
+udever-bloom-1b1,14,50.06,8,58.29
+udever-bloom-560m,15,38.55,12,55.81
