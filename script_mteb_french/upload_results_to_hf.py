@@ -79,7 +79,7 @@ def load_tasks(root_folder: str, return_path_map: bool = False):
     return result_dict
 
 
-def add_fr_result_to_file(root_folder, model_name, task_name, split, results):
+def add_fr_result_to_file(root_folder: str, model_name: str, task_name: str, split: str, results: dict):
     res_file = os.path.join(root_folder, model_name, task_name)
     
     logging.info("Load results file and add fr results")
@@ -93,8 +93,8 @@ def add_fr_result_to_file(root_folder, model_name, task_name, split, results):
         json.dump(orig_file, fp)
 
 
-def create_new_model_evaluation_folder(root_folder, model):
-    path = os.path.join(root_folder, model)
+def create_new_model_evaluation_folder(root_folder: str, model_name: str):
+    path = os.path.join(root_folder, model_name)
     if not os.path.exists(path):
         os.mkdir(path)
 
@@ -116,10 +116,10 @@ def create_new_task_file(root_folder_orig,  model_name, task_name: str = None, m
         shutil.copy(src=fr_res_file_path, dst=dst_mteb_orig)
     
 
-def main(): 
-    #TODO handle lowercase and model names
-    base_path_mteb_orig = "mteb_results"
-    base_path_mteb_fr = "results"
+def main(args): 
+    #TODO handle lowercase and model names: laser2 == LASER2
+    base_path_mteb_orig = args.mteb_results_folder
+    base_path_mteb_fr = args.mteb_fr_results_folder
     
     mteb_fr_map, mteb_fr_paths_map = load_tasks(root_folder=base_path_mteb_fr, return_path_map=True)
     mteb_orig_map = load_tasks(root_folder=base_path_mteb_orig)
@@ -135,23 +135,25 @@ def main():
                         try: # check if task has split in original mteb
                             if 'fr' not in results_orig[split].keys(): # do not modify existing results
                                 logging.info(f"Add fr results to existing eval of {model} for task {task}")
-                                add_fr_result_to_file(base_path_mteb_orig, model, task, split, results_fr) # add fr results to existing models and tasks
+                                add_fr_result_to_file(base_path_mteb_orig, model, task, split, results_fr)
                         except:
                             logging.warning(f"Task {task} has no attribute language fr")
                 else:
-                    logging.info(f"Copy {task} from mteb-fr results to mteb-original model {model} folder")
-                    create_new_task_file(mteb_fr_paths_map=mteb_fr_paths_map, root_folder_orig=base_path_mteb_orig, model_name=model, task_name=task) # copy task json from mteb-fr results to mteb-original model folder
-        else: # the model is only evaluated in mteb-fr
-            logging.info(f"The model {model} is only evaluated in mteb-fr")
-            create_new_model_evaluation_folder(root_folder=base_path_mteb_orig, model=model)
+                    logging.info(f"Copy {task} file from mteb-fr results to mteb-original model {model} folder")
+                    create_new_task_file(mteb_fr_paths_map=mteb_fr_paths_map, root_folder_orig=base_path_mteb_orig, model_name=model, task_name=task)
+        else:
+            logging.info(f"The model {model} is only evaluated in mteb-fr. Copy all folder to mteb-original")
+            create_new_model_evaluation_folder(root_folder=base_path_mteb_orig, model_name=model)
             create_new_task_file(mteb_fr_paths_map=mteb_fr_paths_map, root_folder_orig=base_path_mteb_orig, model_name=model, copy_all_tasks=True)
     
 
 def parse_args():
     parser = argparse.ArgumentParser()
+    parser.add_argument("--mteb_results_folder", type=str, default="mteb_results")
+    parser.add_argument("--mteb_fr_results_folder", type=str, default="results")
     return parser.parse_args()
 
 
 if __name__ == "__main__":
-    # args = parse_args()
-    main()
+    args = parse_args()
+    main(args)
