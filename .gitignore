@@ -3,4 +3,5 @@
 __pycache__
 ChromaDB
 models
-.vscode
+# custom results
+LaDromeRetrieval.json
