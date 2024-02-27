@@ -29,11 +29,11 @@ TASK_LIST_RERANKING = [
 ]
 
 TASK_LIST_RETRIEVAL = [
-    #"AlloprofRetrieval", 
+    "AlloprofRetrieval", 
     #"BSARDRetrieval",
     "SyntecRetrieval",
-    #"XPQARetrieval",
-    #"MintakaRetrieval",
+    "XPQARetrieval",
+    "MintakaRetrieval",
     "LaDromeRetrieval",
 ]
 
