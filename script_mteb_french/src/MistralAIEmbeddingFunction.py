@@ -58,7 +58,7 @@ class MistralAIEmbeddingFunction(AbstractEmbeddingFunction):
             else:
                 raise MistralAPIException(e)
 
-    def split_big_batches(self, input: Documents, batch_token_limit=14000) -> list[Documents]:
+    def split_big_batches(self, input: Documents, batch_token_limit=12000) -> list[Documents]:
         """The max token limit of a single batch api cal for mistral ai is 16384 tokens.
         This functions splits batches that are to big into smaller subatches
 
