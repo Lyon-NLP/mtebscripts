@@ -86,9 +86,11 @@ LASER_MODELS = ["laser2"]
 
 VOYAGE_MODELS = ["voyage-2", "voyage-code-2"]
 
-OPEN_AI_MODELS = ["text-embedding-ada-002"]
+OPEN_AI_MODELS = ["text-embedding-ada-002", "text-embedding-3-small", "text-embedding-3-large"]
 
 COHERE_MODELS = ["embed-multilingual-light-v3.0", "embed-multilingual-v3.0"]
+
+MISTRAL_MODELS = ["mistral-embed"]
 
 TYPES_TO_MODELS = {
     "sentence_transformer": SENTENCE_TRANSORMER_MODELS
@@ -98,6 +100,8 @@ TYPES_TO_MODELS = {
     "voyage_ai": VOYAGE_MODELS,
     "open_ai": OPEN_AI_MODELS,
     "cohere": COHERE_MODELS,
+    "mistral_ai": MISTRAL_MODELS,
+
 }
 
 ##########################
