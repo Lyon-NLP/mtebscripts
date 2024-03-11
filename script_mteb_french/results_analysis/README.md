@@ -6,11 +6,11 @@ Before starting, you can create your environment using the packages listed in *r
 
 ### result_parser.py
 
-This scripts intent is to ***format results from json files in the results folder to a table*** (csv, excel or latex).
+This script's intent is to ***format results from json files in the results folder to a table*** (csv, excel or latex).
 
 #### Usage
 
-You can use the class ResultParser like so:
+You can use the class ``ResultParser`` like so:
 
 ```py
 from results_analysis.results_parser import ResultParser
@@ -30,7 +30,7 @@ rp = ResultParser()
 results_df = rp(RESULT_FOLDER_PATH, output_format="latex", apply_style=True)
 ```
 
-Alternatively, you can use a command line :
+Alternatively, you can use a command line:
 ```
 python .\script_mteb_french\results_analysis\results_parser.py --results_folder ./results --output_format csv
 ```
