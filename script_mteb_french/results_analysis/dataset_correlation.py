@@ -15,7 +15,7 @@ def parse_args() -> Namespace:
     """
     parser = ArgumentParser()
     parser.add_argument("--results_folder", required=True, type=str)
-    parser.add_argument("--output_folder", type=str, default="./analyses_outputs/results_correlations")
+    parser.add_argument("--output_folder", type=str, default="./analysis_outputs/results_correlations")
     parser.add_argument(
         "--output_format",
         type=str,

@@ -169,7 +169,7 @@ def parse_args() -> Namespace:
     parser = ArgumentParser()
     parser.add_argument("--task_type", type=str, default="all")
     parser.add_argument("--langs", type=list[str], default=["fr"])
-    parser.add_argument("--output_folder", type=str, default="./analyses_outputs/datasets_similarity")
+    parser.add_argument("--output_folder", type=str, default="./analysis_outputs/datasets_similarity")
     parser.add_argument("--model_name", type=str, default="intfloat/multilingual-e5-large")
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--n_samples", type=int, default=90)

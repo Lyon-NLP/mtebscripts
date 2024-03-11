@@ -262,7 +262,7 @@ def parse_args() -> Namespace:
     parser.add_argument("--results_folder", required=True, type=str)
     parser.add_argument("--output_format", type=str, choices=["excel", "csv", "latex"], default="excel")
     parser.add_argument("--apply_style", type=bool, default=True)
-    parser.add_argument("--output_folder", type=str, default="./analyses_outputs/")
+    parser.add_argument("--output_folder", type=str, default="./analysis_outputs/")
     args = parser.parse_args()
 
     return args

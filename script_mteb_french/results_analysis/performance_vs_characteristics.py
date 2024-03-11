@@ -60,7 +60,7 @@ def parse_args() -> Namespace:
     parser.add_argument(
         "--output_folder",
         type=str,
-        default="./analyses_outputs/performance_vs_characteristics",
+        default="./analysis_outputs/performance_vs_characteristics",
     )
     parser.add_argument(
         "--output_format",

@@ -19,7 +19,7 @@ def parse_args() -> Namespace:
     parser.add_argument(
         "--output_folder",
         type=str,
-        default="./analyses_outputs/statistical_tests",
+        default="./analysis_outputs/statistical_tests",
     )
     parser.add_argument(
         "--output_format",
