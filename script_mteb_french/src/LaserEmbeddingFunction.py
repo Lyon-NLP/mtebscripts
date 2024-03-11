@@ -33,7 +33,7 @@ class LaserEmbeddingFunction(AbstractEmbeddingFunction):
 
     @staticmethod
     def _download_laser_models():
-        MODELS_DOWNLOAD_FOLDER = "models"
+        MODELS_DOWNLOAD_FOLDER = "downloads"
         if not os.path.exists(MODELS_DOWNLOAD_FOLDER):
             os.mkdir(MODELS_DOWNLOAD_FOLDER)
 
