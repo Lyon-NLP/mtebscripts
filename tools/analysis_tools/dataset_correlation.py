@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
 
-from results_parser import ResultsParser
+from mtebscripts.tools.results_parser import ResultsParser
 
 
 def parse_args() -> Namespace:

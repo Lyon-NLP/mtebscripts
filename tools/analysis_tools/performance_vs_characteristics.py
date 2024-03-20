@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import os
 from argparse import ArgumentParser, Namespace
 
-from results_parser import ResultsParser
+from mtebscripts.tools.results_parser import ResultsParser
 import numpy as np
 
 # model,pretrained_or_tuned,multilingual_or_french,number_params,size_gb,seq_len,embedding_dim,model_type,license

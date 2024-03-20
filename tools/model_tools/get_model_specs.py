@@ -4,7 +4,7 @@ import sys
 import os
 
 from huggingface_hub import HfFileSystem
-import model_spec_utils
+import mtebscripts.tools.model_tools.model_spec_utils as model_spec_utils
 from run_benchmark import TYPES_TO_MODELS
 import pandas as pd
 
