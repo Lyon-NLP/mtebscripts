@@ -1,93 +1,70 @@
-# MTEB Scripts
+# Scripts to run the French MTEB benchmark
 
-This repository contains scripts used for [MTEB](https://github.com/embeddings-benchmark/mteb) benchmarking. Some scripts rely on a results folder, which can be obtained via `git clone https://huggingface.co/datasets/mteb/results`.
+This folder contains the scripts used to generate the French tab results on the [MTEB](https://github.com/embeddings-benchmark/mteb) benchmark.
 
-<!-- TOC -->
-
-- [MTEB Scripts](#mteb-scripts)
-    - [Benchmark](#benchmark)
-    - [Env Setup](#env-setup)
-    - [Model setup](#model-setup)
-        - [Download](#download)
-        - [Load](#load)
-
-<!-- /TOC -->
+Below are instructions to run the main scripts.
 
 ## Benchmark
 
-Basic with Internet
-```python
-from mteb import MTEB
-from sentence_transformers import SentenceTransformer
-model_path = "/gpfswork/rech/six/commun/models/Muennighoff_SGPT-125M-weightedmean-nli-bitfit"
-model_name = model_path.split("/")[-1].split("_")[-1]
-model = SentenceTransformer(model_path)
-evaluation = MTEB(tasks=["Banking77Classification"])
-evaluation.run(model, output_folder=f"results/{model_name}")
-```
+### Running on host using venv
 
-No Internet Access (Download data first)
-```python
-import os
-os.environ["HF_DATASETS_OFFLINE"]="1" # 1 for offline
-os.environ["TRANSFORMERS_OFFLINE"]="1" # 1 for offline
-os.environ["TRANSFORMERS_CACHE"]="/gpfswork/rech/six/commun/models"
-os.environ["HF_DATASETS_CACHE"]="/gpfswork/rech/six/commun/datasets"
-os.environ["HF_MODULES_CACHE"]="/gpfswork/rech/six/commun/modules"
-os.environ["HF_METRICS_CACHE"]="/gpfswork/rech/six/commun/metrics"
-from mteb import MTEB
-from sentence_transformers import SentenceTransformer
-model_path = "/gpfswork/rech/six/commun/models/Muennighoff_SGPT-125M-weightedmean-nli-bitfit"
-model_name = model_path.split("/")[-1].split("_")[-1]
-model = SentenceTransformer(model_path)
-evaluation = MTEB(tasks=["Banking77Classification"])
-evaluation.run(model, output_folder=f"results/{model_name}")
-```
-
-
-## Env Setup
+* Navigate to the repository root folder
+* Create your virtual env:
 
 ```bash
-export CONDA_ENVS_PATH=$six_ALL_CCFRWORK/conda
-
-conda create -y -n hf-prod python=3.8
-conda activate hf-prod
-
-# pt-1.10.1 / cuda 11.3
-conda install pytorch torchvision torchaudio cudatoolkit=11.3 -c pytorch
-
-# Custom fork that uses offline datasets
-!pip install --upgrade git+https://github.com/Muennighoff/mteb.git@offlineaccess
-!pip install --upgrade git+https://github.com/Muennighoff/sentence-transformers.git@sgpt_poolings
-# If you want to run BEIR tasks
-!pip install --upgrade git+https://github.com/beir-cellar/beir.git
+python3 -m venv .venv
+```
+* Activate it and install the requirements:
+```bash
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+* Run the benchmark:
+```bash
+cd script_mteb_french
+python run_benchmark.py
 ```
 
-## Model setup
-
-### Download
-
-```python
-import os
-import sentence_transformers
-os.environ["SENTENCE_TRANSFORMERS_HOME"] = "/gpfswork/rech/six/commun/models"
-sentence_transformers_cache_dir = os.getenv("SENTENCE_TRANSFORMERS_HOME")
-model_repo="sentence-transformers/allenai-specter"
-revision="29f9f45ff2a85fe9dfe8ce2cef3d8ec4e65c5f37"
-model_path = os.path.join(sentence_transformers_cache_dir, model_repo.replace("/", "_"))
-model_path_tmp = sentence_transformers.util.snapshot_download(
-    repo_id=model_repo,
-    revision=revision,
-    cache_dir=sentence_transformers_cache_dir,
-    library_name="sentence-transformers",
-    library_version=sentence_transformers.__version__,
-    ignore_files=["flax_model.msgpack", "rust_model.ot", "tf_model.h5",],
-)
-os.rename(model_path_tmp, model_path)
+By default the benchmark runs on sentence_transformer models but you can specify the type with the argument `--model_type`:
+```bash
+# default ['sentence_transformer']
+python run_benchmark.py
+# choosing other type ['voyage_ai']
+python run_benchmark.py --model_type voyage_ai
+# running on two types ['voyage_ai', 'sentence_transformer']
+python run_benchmark.py --model_type voyage_ai sentence_transformer
 ```
 
-### Load
-
-```python
-model = SentenceTransformer("/gpfswork/rech/six/commun/models/Muennighoff_SGPT-125M-weightedmean-nli-bitfit")
+You can also run the benchmark on one model only by specifying `--model_name`:
+```bash
+# default ['sentence_transformer'] -> all models of this type
+python run_benchmark.py
+# running on one model 'camembert-base'
+python run_benchmark.py --model_type sentence_transformer --model_name "xlm-roberta-base"
 ```
+Note that the `model_name` should be included in models of specified `model_type`.
+
+You can run the benchmark on one task type in ["all", "classification", "clustering", "reranking", "retrieval", "pair_classification", "sts", "summarization", "bitextmining"], default is set to "all" and will run all tasks :
+```bash
+# running 'sentence_transformer' models on 'classification' task
+python run_benchmark.py --model_type sentence_transformer --task_type classification
+```
+
+## Running using Docker
+
+* Navigate to the repository root folder
+* Build the docker image:
+```bash
+docker build -t mtebscripts_image .
+```
+* Run the benchmark in the container as follows:
+```
+docker run -v $(pwd):/mtebscripts mtebscripts_image sh -c "cd script_mteb_french && python run_benchmark.py"
+```
+If you want to use the gpu, make sure to add the `--gpus` option to your run command, or `--runtime=nvidia` if you are using an older version of docker.
+
+Note: Because the volume is shared between the host and the container, the results will be available in the host at the end.
+
+## Models' characteristics
+
+Additionnaly, you can find a script `get_model_specs.py` to compute models' characteristics (size, number of params, embeddings dimension). You can run it similarly to the benchmark by substituting `run_benchmark.py` with `get_model_specs.py`.

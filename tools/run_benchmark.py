@@ -1,0 +1,185 @@
+import sys
+import argparse
+import logging
+
+from mteb import MTEB
+
+from src.ModelConfig import ModelConfig
+from utils.tasks_list import get_tasks
+from utils.models_list import TYPES_TO_MODELS, SENTENCE_TRANSORMER_MODELS_WITH_ERRORS
+
+logging.basicConfig(
+    stream=sys.stdout,
+    level=logging.INFO,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+)
+
+"""
+How to use ?
+------------
+
+You need 2 things (=variables) :
+
+- TASKS : a list of tasks available in the MTEB module
+=> it is a list of strings corresponding to the tasks names
+Example : TASKS = [SyntecRetrieval]
+
+- MODELS : a list of model configs (=ModelConfig objects)
+=> each model config must be provided a model name and a model_type.
+=> supported model_type are "sentence_transformer", "voyage_ai", "open_ai"
+Example: MODELS = [ModelConfig("intfloat/multilingual-e5-base", model_type="sentence_transformer")]
+"""
+
+
+##########################
+# Step : Run benchmark #
+##########################
+
+
+def run_bitext_mining_tasks(args, model_config: ModelConfig, task: str):
+    """Runs Bitext Mining tasks"""
+    model_name = model_config.model_name
+    model_config.batch_size = args.batchsize
+
+    eval_splits = ["dev"] if task == "FloresBitextMining" else ["test"]
+
+    if task == "DiaBLaBitextMining":
+        evaluation = MTEB(tasks=[task], task_langs=[args.lang, "en"])
+        evaluation.run(
+            model_config,
+            output_folder=f"results/{model_name}",
+            batch_size=args.batchsize,
+            eval_splits=eval_splits,
+        )
+    elif task == "FloresBitextMining":
+        evaluation = MTEB(tasks=[task], task_langs=[args.lang, args.other_lang])
+        evaluation.run(
+            model_config,
+            output_folder=f"results/{model_name}",
+            batch_size=args.batchsize,
+            eval_splits=eval_splits,
+        )
+
+
+def get_models(model_name, model_type, max_token_length) -> list[ModelConfig]:
+    """Returns ModelConfig of input model_name or all ModelConfig model_type's list of models"""
+    if model_name:
+        logging.info(f"Running benchmark with the following model: {model_name}")
+        if len(model_type) > 1:
+            raise Exception(
+                "Only one model type needs to be specified when a model name is given."
+            )
+
+        model_type_value = model_type[0]
+        available_models_for_type = TYPES_TO_MODELS[model_type_value]
+
+        if model_name not in available_models_for_type:
+            raise Exception(
+                f"Model name not in {available_models_for_type}.\n\
+                Please select a correct model name corresponding to your model type."
+            )
+
+        if max_token_length:
+            return [
+                ModelConfig(
+                    model_name=model_name,
+                    model_type=model_type_value,
+                    max_token_length=max_token_length,
+                )
+            ]
+        else:
+            return [ModelConfig(model_name=model_name, model_type=model_type_value)]
+    else:
+        logging.info(f"Running benchmark with the following model types: {model_type}")
+        if max_token_length:
+            return [
+                ModelConfig(
+                    name, model_type=model_type, max_token_length=max_token_length
+                )
+                for model_type in model_type
+                for name in TYPES_TO_MODELS[model_type]
+            ]
+        else:
+            return [
+                ModelConfig(name, model_type=model_type)
+                for model_type in model_type
+                for name in TYPES_TO_MODELS[model_type]
+            ]
+
+
+def parse_args() -> argparse.Namespace:
+    """Parse command line arguments
+
+    Returns:
+        (argparse.Namespace): the arguments
+    """
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--lang", type=str, default="fr")
+    parser.add_argument("--batchsize", type=int, default=32)
+    parser.add_argument("--model_type", nargs="+", default=["sentence_transformer"])
+    parser.add_argument(
+        "--model_name", type=str, default=None, help="Run evaluation on one model only."
+    )
+    parser.add_argument(
+        "--task_type",
+        nargs="+",
+        default=["all"],
+        help="Choose tasks to run the evaluation on.",
+    )
+    parser.add_argument(
+        "--other_lang",
+        type=str,
+        default="en",
+        help="Other language for Bitext Mining task",
+    )
+    parser.add_argument("--max_token_length", type=int, default=None)
+    args = parser.parse_args()
+
+    return args
+
+
+def main(args):
+    # Select tasks to run evaluation on, default is set to all tasks
+    tasks = get_tasks(args.task_type)
+
+    # Running one model at a time or all models
+    models = get_models(
+        model_name=args.model_name,
+        model_type=args.model_type,
+        max_token_length=args.max_token_length,
+    )
+
+    # Running evaluation on all models for selected tasks
+    for model_config in models:
+        # fix the max_seq_length for some models with errors
+        if model_config.model_name in SENTENCE_TRANSORMER_MODELS_WITH_ERRORS:
+            model_config.embedding_function.model._first_module().max_seq_length = 512
+
+        for task_type, task in tasks:
+            if (task_type == "bitextmining") or ("BitextMining" in task):
+                logging.warning(
+                    "If other_lang is not specified in args, then it is set to 'en' by default"
+                )
+                logging.info(
+                    f"Running task: {task} with model {model_config.model_name}"
+                )
+                run_bitext_mining_tasks(args=args, model_config=model_config, task=task)
+            else:
+                # change the task in the model config ! This is important to specify the chromaDB collection !
+                eval_splits = ["validation"] if task == "MSMARCO" else ["test"]
+                model_name = model_config.model_name
+                model_config.batch_size = args.batchsize
+                logging.info(f"Running task: {task} with model {model_name}")
+                eval_splits = ["validation"] if task == "MSMARCO" else ["test"]
+                evaluation = MTEB(tasks=[task], task_langs=[args.lang])
+                evaluation.run(
+                    model_config,
+                    output_folder=f"results/{model_name}",
+                    batch_size=args.batchsize,
+                    eval_splits=eval_splits,
+                )
+
+
+if __name__ == "__main__":
+    args = parse_args()
+    main(args)
