@@ -1,0 +1,62 @@
+{
+  "dataset_revision": "1399c76144fd37290681b995c656ef9b2e06e26d",
+  "evaluation_time": 46.7000195980072,
+  "kg_co2_emissions": null,
+  "mteb_version": "1.11.10",
+  "scores": {
+    "test": [
+      {
+        "accuracy": 0.42346000000000006,
+        "f1": 0.4081347776940918,
+        "hf_subset": "fr",
+        "languages": [
+          "fra-Latn"
+        ],
+        "main_score": 0.42346000000000006,
+        "scores_per_experiment": [
+          {
+            "accuracy": 0.4048,
+            "f1": 0.39593255685081397
+          },
+          {
+            "accuracy": 0.4436,
+            "f1": 0.4315481777670656
+          },
+          {
+            "accuracy": 0.4388,
+            "f1": 0.42809019919483615
+          },
+          {
+            "accuracy": 0.3822,
+            "f1": 0.3652675689076271
+          },
+          {
+            "accuracy": 0.4426,
+            "f1": 0.42724150663814564
+          },
+          {
+            "accuracy": 0.4314,
+            "f1": 0.4175882689507834
+          },
+          {
+            "accuracy": 0.4424,
+            "f1": 0.4299493212653426
+          },
+          {
+            "accuracy": 0.41,
+            "f1": 0.38642990045047865
+          },
+          {
+            "accuracy": 0.41,
+            "f1": 0.38686684329565535
+          },
+          {
+            "accuracy": 0.4288,
+            "f1": 0.41243343362016927
+          }
+        ]
+      }
+    ]
+  },
+  "task_name": "AmazonReviewsClassification"
+}
