@@ -39,8 +39,9 @@ class FlagEmbeddingFunction(AbstractEmbeddingFunction):
         embeddings = self.model.encode(
             input,
             max_length=self.max_token_length,
-            # normalize_embeddings=self.normalize_embeddings,
             return_dense=True,
-        )['dense_vecs']
+            return_sparse=False, 
+            return_colbert_vecs=False
+        )
 
-        return embeddings.tolist()
+        return embeddings['dense_vecs'].tolist()

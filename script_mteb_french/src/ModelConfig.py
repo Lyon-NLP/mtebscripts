@@ -47,8 +47,8 @@ class ModelConfig(ChromaDBEmbedder):
             else self.infer_model_type(model_name)
         )
         self._max_token_length = max_token_length
-        self.embedding_function = self.get_embedding_function()
         self.use_fp16 = use_fp16
+        self.embedding_function = self.get_embedding_function()
 
         # inherit the saving of embeddings, and encoding logic from ChromDBEmbedder
         save_embbeddings = (

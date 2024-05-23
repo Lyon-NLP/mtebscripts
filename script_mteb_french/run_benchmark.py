@@ -99,7 +99,7 @@ COHERE_MODELS = ["embed-multilingual-light-v3.0", "embed-multilingual-v3.0"]
 
 MISTRAL_MODELS = ["mistral-embed"]
 
-FLAG_EMBED_MODELS = ["bge-m3", "bge-m3-custom-fr"]
+FLAG_EMBED_MODELS = ["BAAI/bge-m3", "manu/bge-m3-custom-fr"]
 
 TYPES_TO_MODELS = {
     "sentence_transformer": SENTENCE_TRANSORMER_MODELS
