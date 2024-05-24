@@ -80,6 +80,7 @@ SENTENCE_TRANSORMER_MODELS_WITH_ERRORS = [
     "camembert/camembert-base",
     "camembert/camembert-large",
     "dangvantuan/sentence-camembert-large",
+    "Lajavaness/sentence-camembert-large",
     "xlm-roberta-base",
     "xlm-roberta-large",
 ]
@@ -152,8 +153,8 @@ def get_models(model_name, model_type, max_token_length) -> list[ModelConfig]:
                 "Only one model type needs to be specified when a model name is given."
             )
 
-        # model_type_value = model_type[0]
-        available_models_for_type = TYPES_TO_MODELS[model_type[0]]
+        model_type_value = model_type[0]
+        available_models_for_type = TYPES_TO_MODELS[model_type_value]
 
         if model_name not in available_models_for_type:
             raise Exception(
@@ -161,8 +162,7 @@ def get_models(model_name, model_type, max_token_length) -> list[ModelConfig]:
                 Please select a correct model name corresponding to your model type."
             )
 
-        # return [ModelConfig(model_name=model_name, model_type=model_type_value, max_token_length=max_token_length)]
-        # else:
+        return [ModelConfig(model_name=model_name, model_type=model_type_value, max_token_length=max_token_length)]
     logging.info(f"Running benchmark with the following model types: {model_type}")
     return [
         ModelConfig(
