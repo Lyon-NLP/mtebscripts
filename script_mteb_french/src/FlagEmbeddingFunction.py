@@ -15,7 +15,7 @@ as the embedding function provided by chroma generates bug for not native senten
 class FlagEmbeddingFunction(AbstractEmbeddingFunction):
     def __init__(
         self,
-        model_name: str = "dangvantuan/sentence-camembert-base",
+        model_name: str = "BAAI/bge-m3",
         max_token_length: int = 4096,
         normalize_embeddings=True,
         use_fp16=False,
