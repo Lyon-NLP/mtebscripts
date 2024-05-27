@@ -126,7 +126,7 @@ def run_bitext_mining_tasks(args, model_config: ModelConfig, task: str):
 
     eval_splits = ["dev"] if task == "FloresBitextMining" else ["test"]
 
-    if task == "DiaBLaBitextMining":
+    if task == "DiaBlaBitextMining":
         evaluation = MTEB(tasks=[task], task_langs=[args.lang, "en"])
         evaluation.run(
             model_config,

@@ -1,0 +1,54 @@
+{
+  "dataset_revision": "c99d599f0a6ab9b85b065da6f9d94f9cf731679f",
+  "evaluation_time": 6.775261402130127,
+  "kg_co2_emissions": null,
+  "mteb_version": "1.11.19",
+  "scores": {
+    "test": [
+      {
+        "hf_subset": "fra-fra",
+        "languages": [
+          "fra-Latn",
+          "fra-Latn"
+        ],
+        "main_score": 0.70911,
+        "map_at_1": 0.4113,
+        "map_at_10": 0.64585,
+        "map_at_100": 0.65843,
+        "map_at_1000": 0.65888,
+        "map_at_20": 0.65382,
+        "map_at_3": 0.58009,
+        "map_at_5": 0.62394,
+        "mrr_at_1": 0.64352,
+        "mrr_at_10": 0.72534,
+        "mrr_at_100": 0.72955,
+        "mrr_at_1000": 0.72967,
+        "mrr_at_20": 0.72831,
+        "mrr_at_3": 0.70583,
+        "mrr_at_5": 0.71664,
+        "ndcg_at_1": 0.64352,
+        "ndcg_at_10": 0.70911,
+        "ndcg_at_100": 0.74819,
+        "ndcg_at_1000": 0.75564,
+        "ndcg_at_20": 0.72832,
+        "ndcg_at_3": 0.65541,
+        "ndcg_at_5": 0.67423,
+        "precision_at_1": 0.64352,
+        "precision_at_10": 0.16409,
+        "precision_at_100": 0.01971,
+        "precision_at_1000": 0.00207,
+        "precision_at_20": 0.08865,
+        "precision_at_3": 0.40053,
+        "precision_at_5": 0.28785,
+        "recall_at_1": 0.4113,
+        "recall_at_10": 0.80507,
+        "recall_at_100": 0.95062,
+        "recall_at_1000": 0.99967,
+        "recall_at_20": 0.86707,
+        "recall_at_3": 0.63578,
+        "recall_at_5": 0.72045
+      }
+    ]
+  },
+  "task_name": "XPQARetrieval"
+}

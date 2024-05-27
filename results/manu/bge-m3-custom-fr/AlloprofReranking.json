@@ -1,8 +1,8 @@
 {
-  "dataset_revision": "e40c8a63ce02da43200eccb5b0846fcaa888f562",
-  "evaluation_time": 274.6747772693634,
+  "dataset_revision": "65393d0d7a08a10b4e348135e824f385d420b0fd",
+  "evaluation_time": 634.5167553424835,
   "kg_co2_emissions": null,
-  "mteb_version": "1.11.10",
+  "mteb_version": "1.11.19",
   "scores": {
     "test": [
       {
@@ -10,9 +10,9 @@
         "languages": [
           "fra-Latn"
         ],
-        "main_score": 0.6529502225258519,
-        "map": 0.6529502225258519,
-        "mrr": 0.6664081133316885
+        "main_score": 0.7368891701668482,
+        "map": 0.7368891701668482,
+        "mrr": 0.7490147901417331
       }
     ]
   },

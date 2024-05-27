@@ -1,0 +1,53 @@
+{
+  "dataset_revision": "efa78cc2f74bbcd21eff2261f9e13aebe40b814e",
+  "evaluation_time": 20.03656816482544,
+  "kg_co2_emissions": null,
+  "mteb_version": "1.11.19",
+  "scores": {
+    "test": [
+      {
+        "hf_subset": "fr",
+        "languages": [
+          "fra-Latn"
+        ],
+        "main_score": 0.25173,
+        "map_at_1": 0.14005,
+        "map_at_10": 0.2128,
+        "map_at_100": 0.22288,
+        "map_at_1000": 0.22404,
+        "map_at_20": 0.21848,
+        "map_at_3": 0.19151,
+        "map_at_5": 0.20322,
+        "mrr_at_1": 0.14005,
+        "mrr_at_10": 0.2128,
+        "mrr_at_100": 0.22288,
+        "mrr_at_1000": 0.22404,
+        "mrr_at_20": 0.21848,
+        "mrr_at_3": 0.19151,
+        "mrr_at_5": 0.20322,
+        "ndcg_at_1": 0.14005,
+        "ndcg_at_10": 0.25173,
+        "ndcg_at_100": 0.30452,
+        "ndcg_at_1000": 0.34241,
+        "ndcg_at_20": 0.27222,
+        "ndcg_at_3": 0.20768,
+        "ndcg_at_5": 0.22869,
+        "precision_at_1": 0.14005,
+        "precision_at_10": 0.03759,
+        "precision_at_100": 0.00631,
+        "precision_at_1000": 0.00095,
+        "precision_at_20": 0.02283,
+        "precision_at_3": 0.08477,
+        "precision_at_5": 0.06102,
+        "recall_at_1": 0.14005,
+        "recall_at_10": 0.37592,
+        "recall_at_100": 0.63145,
+        "recall_at_1000": 0.94513,
+        "recall_at_20": 0.45659,
+        "recall_at_3": 0.2543,
+        "recall_at_5": 0.30508
+      }
+    ]
+  },
+  "task_name": "MintakaRetrieval"
+}
