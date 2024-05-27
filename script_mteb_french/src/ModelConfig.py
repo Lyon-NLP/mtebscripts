@@ -24,6 +24,7 @@ class ModelConfig(ChromaDBEmbedder):
         model_type: str = None,
         max_token_length: int = None,
         prompts: dict = None,
+        task_type: str = None,
     ):
         """The model configuration to use for the benchmark
 
@@ -40,6 +41,7 @@ class ModelConfig(ChromaDBEmbedder):
         self._available_model_types = list(self._max_token_per_model.keys())
 
         self.model_name = model_name
+        self.task_type = task_type
         self._model_type = (
             model_type
             if model_type in self._max_token_per_model.keys()
@@ -124,7 +126,7 @@ class ModelConfig(ChromaDBEmbedder):
             case "sentence_transformer":
                 return SentenceTransformerEmbeddingFunction(
                     self.model_name, self.max_token_length,
-                    prompts=prompts
+                    prompts=prompts, task_type=self.task_type
                 )
             case "universal_sentence_encoder":
                 return UniversalSentenceEncoderEmbeddingFunction(

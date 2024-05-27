@@ -46,7 +46,7 @@ class AbstractEmbeddingFunction(EmbeddingFunction, ABC):
 
         return truncated_input
 
-    def __call__(self, input: Documents, **kwargs) -> Embeddings:
+    def __call__(self, input: Documents) -> Embeddings:
         """Wrapper that truncates the documents, encodes them
 
         Args:
@@ -56,12 +56,12 @@ class AbstractEmbeddingFunction(EmbeddingFunction, ABC):
             Embeddings: the encoded sentences
         """
         truncated_input = self.truncate_documents(input)
-        embeddings = self.encode_documents(truncated_input, **kwargs)
+        embeddings = self.encode_documents(truncated_input)
 
         return embeddings
 
     @abstractmethod
-    def encode_documents(self, input: Documents, **kwargs) -> Embeddings:
+    def encode_documents(self, input: Documents) -> Embeddings:
         """Needs to be implemented by the child class. Takes a list of strings
         and returns the corresponding embedding
 

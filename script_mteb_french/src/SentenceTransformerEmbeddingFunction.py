@@ -19,12 +19,17 @@ class SentenceTransformerEmbeddingFunction(AbstractEmbeddingFunction):
         max_token_length: int = 4096,
         normalize_embeddings=True,
         prompts: dict = None,
+        task_type: str = None,
     ):
         super().__init__(max_token_length)
 
         self._model_name = model_name
         self.normalize_embeddings = normalize_embeddings
         self.prompts = prompts
+        self.task_type = task_type # if provided, used for prompt selection
+
+        if (isinstance(prompts, dict)) and (task_type is not None) and (task_type not in self.prompts.keys()):
+            raise ValueError(f"Please provide task type from the following list: {self.prompts.keys()}")
 
         self.model = SentenceTransformer(
             model_name, device="cuda" if torch.cuda.is_available() else "cpu",
@@ -36,10 +41,9 @@ class SentenceTransformerEmbeddingFunction(AbstractEmbeddingFunction):
     def model_name(self):
         return self._model_name
 
-    def encode_documents(self, input: Documents, **kwargs) -> Embeddings:
-        print(kwargs)
-        if (kwargs.task_type is not None) and (kwargs.task_type in self.model.prompts.keys()):
-            prompt_name = kwargs.task_type
+    def encode_documents(self, input: Documents) -> Embeddings:
+        if (self.task_type is not None) and (self.task_type in self.model.prompts.keys()):
+            prompt_name = self.task_type
             embeddings = self.model.encode(
                 input, normalize_embeddings=self.normalize_embeddings,
                 prompt_name=prompt_name

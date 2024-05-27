@@ -103,9 +103,10 @@ COHERE_MODELS = ["embed-multilingual-light-v3.0", "embed-multilingual-v3.0"]
 MISTRAL_MODELS = ["mistral-embed"]
 
 TYPES_TO_MODELS = {
-    "sentence_transformer": SENTENCE_TRANSORMER_MODELS
-    + SENTENCE_TRANSORMER_MODELS_WITH_ERRORS
-    + SENTENCE_TRANSORMER_MODELS_WITH_PROMPT,
+    "sentence_transformer": 
+    # SENTENCE_TRANSORMER_MODELS
+    # + SENTENCE_TRANSORMER_MODELS_WITH_ERRORS
+    SENTENCE_TRANSORMER_MODELS_WITH_PROMPT,
     "universal_sentence_encoder": UNIVERSAL_SENTENCE_ENCODER_MODELS,
     "laser": LASER_MODELS,
     "voyage_ai": VOYAGE_MODELS,
@@ -144,9 +145,10 @@ def run_bitext_mining_tasks(args, model_config: ModelConfig, task: str):
         )
 
 
-def get_models(model_name: str, model_type: str, max_token_length: int) -> list[ModelConfig]:
+def get_models(model_name: str, model_type: str, max_token_length: int, task_type: str = None) -> list[ModelConfig]:
     """Returns ModelConfig of input model_name or all ModelConfig model_type's list of models"""
     logging.info(f"Running benchmark with the following model types: {model_type}")
+    configs = []
 
     if model_name:
         logging.info(f"Running benchmark with the following model: {model_name}")
@@ -163,14 +165,24 @@ def get_models(model_name: str, model_type: str, max_token_length: int) -> list[
                 f"Model name not in {available_models_for_type}.\n\
                 Please select a correct model name corresponding to your model type."
             )
- 
-    return [
-        ModelConfig(
-            name, model_type=model_type, max_token_length=max_token_length, prompts=PROMPT_PER_TYPE
-        )
-        for model_type in model_type
-        for name in TYPES_TO_MODELS[model_type]
-    ]
+   
+    for mt in model_type:
+        for name in TYPES_TO_MODELS[mt]:
+            if name in SENTENCE_TRANSORMER_MODELS_WITH_PROMPT:
+                configs.append(
+                    ModelConfig(
+                        name, model_type=mt, max_token_length=max_token_length, 
+                        prompts=PROMPT_PER_TYPE, task_type=task_type
+                    )
+                )
+            else:
+                configs.append(
+                    ModelConfig(
+                        name, model_type=mt, max_token_length=max_token_length
+                    )
+                )
+
+    return configs
 
 
 def parse_args() -> argparse.Namespace:
@@ -188,7 +200,8 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--task_type",
-        nargs="+",
+        # nargs="+",
+        type=str, 
         default=["all"],
         help="Choose tasks to run the evaluation on.",
     )
@@ -206,13 +219,15 @@ def parse_args() -> argparse.Namespace:
 
 def main(args):
     # Select tasks to run evaluation on, default is set to all tasks
-    tasks = get_tasks(args.task_type)
+    task_type = args.task_type
+    tasks = get_tasks(task_type)
 
     # Running one model at a time or all models
     models = get_models(
         model_name=args.model_name,
         model_type=args.model_type,
         max_token_length=args.max_token_length,
+        task_type=task_type if task_type != "all" else None
     )
 
     # Running evaluation on all models for selected tasks
@@ -242,8 +257,6 @@ def main(args):
                 model_name = model_config.model_name
                 model_config.batch_size = args.batchsize
 
-                prompt = PROMPT_PER_TYPE[task_type] if task in SENTENCE_TRANSORMER_MODELS_WITH_PROMPT else None
-
                 logging.info(f"Running task: {task} with model {model_name}")
                 #################################
                 evaluation = MTEB(tasks=[task], task_langs=[args.lang])
@@ -252,8 +265,6 @@ def main(args):
                     output_folder=f"results/{model_name}",
                     batch_size=args.batchsize,
                     eval_splits=eval_splits,
-                    prompt=prompt,
-                    kwargs={"task_type": task_type},
                 )
 
 
