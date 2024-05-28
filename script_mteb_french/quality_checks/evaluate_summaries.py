@@ -1,3 +1,22 @@
+"""Evaluate the quality of translation between English and French texts using OpenAI API.
+
+* Set the following environment variables before running the script with api_type="azure":
+
+```bash
+export AZURE_OPENAI_API_KEY="API_KEY"
+export AZURE_OPENAI_ENDPOINT="https://<ENDPOINT_NAME>.openai.azure.com"
+export AZURE_OPENAI_API_VERSION="API_VERSION"
+export AZURE_OPENAI_CHAT_DEPLOYMENT_NAME="DEPLOYMENT_NAME"
+```	
+
+* Set the following environment variables before running the script with api_type="openai":
+
+```bash
+export OPEN_API_KEY="API_KEY"
+export OPENAI_ORGANIZATION="ORGANIZATION_NAME"
+```
+"""
+
 import os
 import argparse
 
@@ -15,12 +34,11 @@ def main(args):
             )
         case "openai":
             model = ChatOpenAI(
-                model="gpt-3.5-turbo-0125", 
+                model=args.model_name, 
                 temperature=0, api_key=os.getenv("OPENAI_API_KEY"), 
                 openai_organization=os.getenv("OPENAI_ORGANIZATION"),
             )
 
-    print("Load datasets from HF..")
     data_fr = load_dataset("lyon-nlp/summarization-summeval-fr-p2p", split="test")
     data_en = load_dataset("mteb/summeval", split="test")
     print(data_fr, data_en)
@@ -29,8 +47,6 @@ def main(args):
         evaluate the quality of the translation only with rates between 1 and 5 with 1 being not of good quality,\
         and 5 of being very good.\n No need to mind the quality of the text as original English text may be of bad quality."""
 
-
-    print("\nRun evaluations..\n")
     for fr_texts in data_fr["machine_summaries"]:
         for eng_texts in data_en["machine_summaries"]:
             for i in range(len(fr_texts)):
@@ -50,6 +66,7 @@ def main(args):
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--api_type", type=str, default="azure", choices=["azure", "openai"])
+    parser.add_argument("--model_name", type=str, default="gpt4-turbo")
     parser.add_argument("--temperature", type=float, default=0.0)
     return parser.parse_args()
 
