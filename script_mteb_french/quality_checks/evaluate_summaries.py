@@ -64,16 +64,14 @@ Total rating: """
 
     for fr_texts, eng_texts in zip(data_fr[args.type], data_en[args.type]):
         for i in range(len(fr_texts)):
-            content = f"english_text='{eng_texts[i]}'\nfrench_translation='{fr_texts[i]}'\n"
             message = HumanMessage(
-                content=prompt+content,
+                content=prompt.format(english_text=eng_texts[i], french_translation=fr_texts[i]),
                 temperature=args.temperature,
             )
             response = model.invoke([message])
             print(f"\nOriginal text in English: {eng_texts[i]}")
             print(f"\nTranslation in French: {fr_texts[i]}\n")
-            print(response.content)
-                
+            print(response.content)    
             break
         break
 
