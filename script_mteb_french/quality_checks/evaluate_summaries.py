@@ -44,22 +44,21 @@ def main(args):
     print(data_fr, data_en)
 
     prompt = """Given an original text in English and its translation in French, \
-        evaluate the quality of the translation only with rates between 1 and 5 with 1 being not of good quality,\
-        and 5 of being very good.\n No need to mind the quality of the text as original English text may be of bad quality."""
+        evaluate the quality of the translation only with rates {"Excellent": 4, "Acceptable": 3, "Could be Improved": 2, "Bad": 1}.\
+        No need to mind the quality of the text as original English text may be of bad quality."""
 
-    for fr_texts in data_fr["machine_summaries"]:
-        for eng_texts in data_en["machine_summaries"]:
-            for i in range(len(fr_texts)):
-                content = f"Original text in English: {eng_texts[i]}\nTranslation in French: {fr_texts[i]}\n"
-                message = HumanMessage(
-                    content=prompt+content,
-                    temperature=args.temperature,
-                )
-                response = model.invoke([message])
-                print(f"\nOriginal text in English: {eng_texts[i]}")
-                print(f"\nTranslation in French: {fr_texts[i]}\n")
-                print(response.content)
-                break
+    for fr_texts, eng_texts in zip(data_fr["machine_summaries"], data_en["machine_summaries"]):
+        for i in range(len(fr_texts)):
+            content = f"Original text in English: {eng_texts[i]}\nTranslation in French: {fr_texts[i]}\n"
+            message = HumanMessage(
+                content=prompt+content,
+                temperature=args.temperature,
+            )
+            response = model.invoke([message])
+            print(f"\nOriginal text in English: {eng_texts[i]}")
+            print(f"\nTranslation in French: {fr_texts[i]}\n")
+            print(response.content)
+                
             break
         break
 
