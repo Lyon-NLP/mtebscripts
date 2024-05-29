@@ -85,7 +85,7 @@ Total rating: """
         translations_rating.append(sub_ratings)
 
         # Save at each step because sometimes of openai.BadRequestError
-        with open("translation_ratings.json", "w") as fp:
+        with open(f"translation_ratings_{args.type}.json", "w") as fp:
             json.dump(translations_rating, fp)
             
 
