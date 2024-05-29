@@ -20,6 +20,7 @@ export OPENAI_ORGANIZATION="ORGANIZATION_NAME"
 import os
 import argparse
 import json
+import re
 
 from datasets import load_dataset
 from langchain_core.messages import HumanMessage
@@ -68,6 +69,7 @@ Total rating: """
 
     for fr_texts, eng_texts in zip(data_fr[args.type], data_en[args.type]):
         sub_ratings = []
+        assert len(fr_texts) == len(eng_texts)
         for i in range(len(fr_texts)):
             try:
                 message = HumanMessage(
@@ -77,8 +79,11 @@ Total rating: """
                 response = model.invoke([message])
                 # print(f"\nOriginal text in English: {eng_texts[i]}")
                 # print(f"\nTranslation in French: {fr_texts[i]}\n")
-                # print(response.content) 
-                sub_ratings.append(response.content)  
+                # print(response.content)   
+                digit_groups = [el.strip() for el in re.findall(r"\d+(?:\.\d+)?", response.content)]
+                rate = float(digit_groups[0])
+                print(rate)
+                sub_ratings.append(rate)
             except openai.BadRequestError:
                 print("The response was filtered due to the prompt triggering Azure OpenAI's content management policy.\nRating set to None.")
                 sub_ratings.append(None)
