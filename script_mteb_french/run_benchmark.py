@@ -79,6 +79,7 @@ SENTENCE_TRANSORMER_MODELS_WITH_ERRORS = [
     "camembert/camembert-base",
     "camembert/camembert-large",
     "dangvantuan/sentence-camembert-large",
+    "Lajavaness/sentence-camembert-large",
     "xlm-roberta-base",
     "xlm-roberta-large",
 ]
@@ -102,6 +103,8 @@ COHERE_MODELS = ["embed-multilingual-light-v3.0", "embed-multilingual-v3.0"]
 
 MISTRAL_MODELS = ["mistral-embed"]
 
+FLAG_EMBED_MODELS = ["BAAI/bge-m3", "manu/bge-m3-custom-fr"]
+
 TYPES_TO_MODELS = {
     "sentence_transformer": 
     SENTENCE_TRANSORMER_MODELS
@@ -113,6 +116,7 @@ TYPES_TO_MODELS = {
     "open_ai": OPEN_AI_MODELS,
     "cohere": COHERE_MODELS,
     "mistral_ai": MISTRAL_MODELS,
+    "flag_embed": FLAG_EMBED_MODELS,
 }
 
 ##########################
