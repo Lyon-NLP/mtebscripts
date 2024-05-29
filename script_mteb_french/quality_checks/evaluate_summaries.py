@@ -46,7 +46,7 @@ def main(args):
     prompt = """
 You will be given a couple of texts in English and its translation in French.
 Your task is to provide a 'rating' score on how well the system translated the English text into French.
-Give your answer as a float on a scale of 0 to 10, where 0 means that the system_translation is bad and does not represent what is being said in the original English text, and 10 means that the translation is good and reprents the original English text.
+Give your answer as a float on a scale of 0 to 10, where 0 means that the system_translation is bad and does not represent what is being said in the original English text, and 10 means that the translation is good and represents the original English text.
 No need to mind the quality of the text as original English text may be of bad quality.
 
 Provide your feedback as follows:
