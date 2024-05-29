@@ -104,9 +104,9 @@ MISTRAL_MODELS = ["mistral-embed"]
 
 TYPES_TO_MODELS = {
     "sentence_transformer": 
-    # SENTENCE_TRANSORMER_MODELS
-    # + SENTENCE_TRANSORMER_MODELS_WITH_ERRORS
-    SENTENCE_TRANSORMER_MODELS_WITH_PROMPT,
+    SENTENCE_TRANSORMER_MODELS
+    + SENTENCE_TRANSORMER_MODELS_WITH_ERRORS
+    + SENTENCE_TRANSORMER_MODELS_WITH_PROMPT,
     "universal_sentence_encoder": UNIVERSAL_SENTENCE_ENCODER_MODELS,
     "laser": LASER_MODELS,
     "voyage_ai": VOYAGE_MODELS,
@@ -127,7 +127,7 @@ def run_bitext_mining_tasks(args, model_config: ModelConfig, task: str):
 
     eval_splits = ["dev"] if task == "FloresBitextMining" else ["test"]
 
-    if task == "DiaBLaBitextMining":
+    if task == "DiaBlaBitextMining":
         evaluation = MTEB(tasks=[task], task_langs=[args.lang, "en"])
         evaluation.run(
             model_config,
