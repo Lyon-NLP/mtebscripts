@@ -62,7 +62,7 @@ Translation in French: {french_translation}
 Feedback:::
 Total rating: """
 
-    for fr_texts, eng_texts in zip(data_fr["machine_summaries"], data_en["machine_summaries"]):
+    for fr_texts, eng_texts in zip(data_fr[args.type], data_en[args.type]):
         for i in range(len(fr_texts)):
             content = f"english_text='{eng_texts[i]}'\nfrench_translation='{fr_texts[i]}'\n"
             message = HumanMessage(
@@ -82,6 +82,7 @@ def parse_args():
     parser.add_argument("--api_type", type=str, default="azure", choices=["azure", "openai"])
     parser.add_argument("--model_name", type=str, default="gpt4-turbo")
     parser.add_argument("--temperature", type=float, default=0.0)
+    parser.add_argument("--type", type=str, default="machine_summaries", choices=["machine_summaries", "human_summaries"])
     return parser.parse_args()
 
 if __name__ == "__main__":
