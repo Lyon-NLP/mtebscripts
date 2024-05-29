@@ -19,10 +19,12 @@ export OPENAI_ORGANIZATION="ORGANIZATION_NAME"
 
 import os
 import argparse
+import json
 
 from datasets import load_dataset
 from langchain_core.messages import HumanMessage
 from langchain_openai import AzureChatOpenAI, ChatOpenAI
+import openai
 
 
 def main(args):
@@ -61,19 +63,32 @@ Translation in French: {french_translation}
 
 Feedback:::
 Total rating: """
+    
+    translations_rating = []
 
     for fr_texts, eng_texts in zip(data_fr[args.type], data_en[args.type]):
+        sub_ratings = []
         for i in range(len(fr_texts)):
-            message = HumanMessage(
-                content=prompt.format(english_text=eng_texts[i], french_translation=fr_texts[i]),
-                temperature=args.temperature,
-            )
-            response = model.invoke([message])
-            print(f"\nOriginal text in English: {eng_texts[i]}")
-            print(f"\nTranslation in French: {fr_texts[i]}\n")
-            print(response.content)    
-            break
-        break
+            try:
+                message = HumanMessage(
+                    content=prompt.format(english_text=eng_texts[i], french_translation=fr_texts[i]),
+                    temperature=args.temperature,
+                )
+                response = model.invoke([message])
+                # print(f"\nOriginal text in English: {eng_texts[i]}")
+                # print(f"\nTranslation in French: {fr_texts[i]}\n")
+                # print(response.content) 
+                sub_ratings.append(response.content)  
+            except openai.BadRequestError:
+                print("The response was filtered due to the prompt triggering Azure OpenAI's content management policy.\nRating set to None.")
+                sub_ratings.append(None)
+        translations_rating.append(sub_ratings)
+
+        # Save at each step because sometimes of openai.BadRequestError
+        with open("translation_ratings.json", "w") as fp:
+            json.dump(translations_rating, fp)
+            
+
 
 def parse_args():
     parser = argparse.ArgumentParser()
