@@ -43,13 +43,28 @@ def main(args):
     data_en = load_dataset("mteb/summeval", split="test")
     print(data_fr, data_en)
 
-    prompt = """Given an original text in English and its translation in French, \
-        evaluate the quality of the translation only with rates {"Excellent": 4, "Acceptable": 3, "Could be Improved": 2, "Bad": 1}.\
-        No need to mind the quality of the text as original English text may be of bad quality."""
+    prompt = """
+You will be given a couple of texts in English and its translation in French.
+Your task is to provide a 'rating' score on how well the system translated the English text into French.
+Give your answer as a float on a scale of 0 to 10, where 0 means that the system_translation is bad and does not represent what is being said in the original English text, and 10 means that the translation is good and reprents the original English text.
+No need to mind the quality of the text as original English text may be of bad quality.
+
+Provide your feedback as follows:
+
+Feedback:::
+Total rating: (your rating, as a float between 0 and 10)
+
+Now here are the question and answer.
+
+Original text in English: {english_text}
+Translation in French: {french_translation}
+
+Feedback:::
+Total rating: """
 
     for fr_texts, eng_texts in zip(data_fr["machine_summaries"], data_en["machine_summaries"]):
         for i in range(len(fr_texts)):
-            content = f"Original text in English: {eng_texts[i]}\nTranslation in French: {fr_texts[i]}\n"
+            content = f"english_text='{eng_texts[i]}'\nfrench_translation='{fr_texts[i]}'\n"
             message = HumanMessage(
                 content=prompt+content,
                 temperature=args.temperature,
