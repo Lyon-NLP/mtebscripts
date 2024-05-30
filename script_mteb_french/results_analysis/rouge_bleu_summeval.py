@@ -4,6 +4,7 @@ from rouge_score import rouge_scorer
 import json
 from scipy.stats import pearsonr
 import matplotlib.pyplot as plt
+import numpy as np
 
 
 dataset_fr = load_dataset("lyon-nlp/summarization-summeval-fr-p2p", "test")
@@ -143,6 +144,22 @@ pearson_correlations = {
 
 with open("all_pearson_correlations.json", "w") as f:
     json.dump(pearson_correlations, f, indent=4)
+
+
+# save all average scores in a json file
+
+average_scores = {}
+for score in ["bleu", "rouge1", "rouge2", "rougeL"]:
+    average_scores[score] = {}
+    for language in ["fr", "en"]:
+        average_scores[score][language] = {}
+        for score_type in ["vs_text", "vs_human"]:
+            average_scores[score][language][score_type] = np.mean(
+                data[score][language][score_type]
+            )
+
+with open("all_average_scores.json", "w") as f:
+    json.dump(average_scores, f, indent=4)
 
 # save figures
 
