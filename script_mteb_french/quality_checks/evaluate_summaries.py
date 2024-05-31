@@ -29,7 +29,7 @@ import openai
 
 
 def main(args):
-    match args.api_type:   
+    match args.api_type:
         case "azure":
             model = AzureChatOpenAI(
                 openai_api_version=os.environ["AZURE_OPENAI_API_VERSION"],
@@ -37,8 +37,8 @@ def main(args):
             )
         case "openai":
             model = ChatOpenAI(
-                model=args.model_name, 
-                temperature=0, api_key=os.getenv("OPENAI_API_KEY"), 
+                model=args.model_name,
+                temperature=0, api_key=os.getenv("OPENAI_API_KEY"),
                 openai_organization=os.getenv("OPENAI_ORGANIZATION"),
             )
 
@@ -64,44 +64,58 @@ Translation in French: {french_translation}
 
 Feedback:::
 Total rating: """
-    
+
     translations_rating = []
 
-    for fr_texts, eng_texts in zip(data_fr[args.type], data_en[args.type]):
+    for id, fr_texts, eng_texts in zip(data_fr["id"], data_fr[args.type], data_en[args.type]):
         sub_ratings = []
+        print(len(fr_texts), len(eng_texts))
         assert len(fr_texts) == len(eng_texts)
         for i in range(len(fr_texts)):
             try:
                 message = HumanMessage(
-                    content=prompt.format(english_text=eng_texts[i], french_translation=fr_texts[i]),
+                    content=prompt.format(
+                        english_text=eng_texts[i], french_translation=fr_texts[i]),
                     temperature=args.temperature,
                 )
                 response = model.invoke([message])
+
                 # print(f"\nOriginal text in English: {eng_texts[i]}")
                 # print(f"\nTranslation in French: {fr_texts[i]}\n")
-                # print(response.content)   
-                digit_groups = [el.strip() for el in re.findall(r"\d+(?:\.\d+)?", response.content)]
-                rate = float(digit_groups[0])
-                print(rate)
-                sub_ratings.append(rate)
+                # print(response.content)
+
+                digit_groups = [el.strip() for el in re.findall(
+                    r"\d+(?:\.\d+)?", response.content)]
+                rating = float(digit_groups[0])
+                
+                print(f"ID: {id}, Rating: {rating}")
+                sub_ratings.append(rating)
+            
             except openai.BadRequestError:
                 print("The response was filtered due to the prompt triggering Azure OpenAI's content management policy.\nRating set to None.")
                 sub_ratings.append(None)
-        translations_rating.append(sub_ratings)
 
-        # Save at each step because sometimes of openai.BadRequestError
-        with open(f"translation_ratings_{args.type}.json", "w") as fp:
+        translations_rating.append({
+            "id": id,
+            "ratings": sub_ratings
+        }
+        )
+
+        # Save at each step
+        with open(f"translation_ratings_{args.type}.json", "a+") as fp:
             json.dump(translations_rating, fp)
-            
 
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--api_type", type=str, default="azure", choices=["azure", "openai"])
+    parser.add_argument("--api_type", type=str,
+                        default="azure", choices=["azure", "openai"])
     parser.add_argument("--model_name", type=str, default="gpt4-turbo")
     parser.add_argument("--temperature", type=float, default=0.0)
-    parser.add_argument("--type", type=str, default="machine_summaries", choices=["machine_summaries", "human_summaries"])
+    parser.add_argument("--type", type=str, default="human_summaries",
+                        choices=["machine_summaries", "human_summaries"])
     return parser.parse_args()
+
 
 if __name__ == "__main__":
     args = parse_args()
