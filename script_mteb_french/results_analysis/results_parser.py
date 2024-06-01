@@ -12,10 +12,15 @@ DATASET_KEYS = {
     "MasakhaNEWSClassification": MTEB(tasks=['MasakhaNEWSClassification'], task_langs=['fr']).tasks[0].langs,
     "MasakhaNEWSClusteringS2S": MTEB(tasks=['MasakhaNEWSClusteringS2S'], task_langs=['fr']).tasks[0].langs,
     "MasakhaNEWSClusteringP2P": MTEB(tasks=['MasakhaNEWSClusteringP2P'], task_langs=['fr']).tasks[0].langs,
+    "XPQARetrieval": MTEB(tasks=['XPQARetrieval'], task_langs=['fr']).tasks[0].langs,
 }
 
+HF_SUBSETS_VALUES = ["fra-fra"]
+ISO3_LANGUAGE = ["fra-Latn"]
 
-MODELS_TO_IGNORE = ['voyage-01', 'voyage-02', 'voyage-lite-01']
+MODELS_TO_IGNORE = ['voyage-01', 'voyage-02', 'voyage-lite-01', 'Geotrend/distilbert-base-en-fr-es-pt-it-cased', 
+                    'Geotrend/bert-base-10lang-cased', 'Geotrend/bert-base-15lang-cased', 'Geotrend/bert-base-25lang-cased',
+                    'dangvantuan/sentence-camembert-large', 'distilbert-base-uncased']
 
 
 class ResultsParser:
@@ -129,7 +134,13 @@ class ResultsParser:
         selected_split = split if split else self.split
 
         if task_results["mteb_version"].startswith("1.11.1"):
-            result = task_results["scores"][selected_split][0]["main_score"]
+            result = None
+            for eval in task_results["scores"][selected_split]:
+                hf_subset = eval['hf_subset']
+                languages = eval['languages'] # used when hf_subset = "default"
+                if (hf_subset == subkey) or (hf_subset in HF_SUBSETS_VALUES) or (languages == ISO3_LANGUAGE):
+                    result = eval["main_score"]
+                    continue
             main_score = self.tasks_main_scores_map[task_name]
             result_name_score = (task_name, main_score)
             return result, result_name_score
