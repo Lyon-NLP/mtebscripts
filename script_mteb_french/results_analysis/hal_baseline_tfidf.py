@@ -9,11 +9,7 @@ DATASET = "lyon-nlp/clustering-hal-s2s"
 SEED = 42
 
 dataset = load_dataset(DATASET, name="mteb_eval", split="test")
-dataset = dataset.remove_columns(["hal_id"])
-
-dataset = dataset.filter(lambda example: example["domain"] not in ("image"))
 dataset = dataset.class_encode_column("domain")
-
 dataset = dataset.train_test_split(test_size=0.3, shuffle=True, stratify_by_column="domain", seed=SEED)
 
 X_train, y_train = dataset["train"]["title"], dataset["train"]["domain"]
