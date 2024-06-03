@@ -7,15 +7,20 @@ from mteb.abstasks import AbsTask
 import pandas as pd
 
 DATASET_KEYS = {
-    "DiaBLaBitextMining": ["fr-en"],
+    "DiaBlaBitextMining": ["fr-en"],
     "FloresBitextMining": MTEB(tasks=['FloresBitextMining'], task_langs=['fr', 'en']).tasks[0].langs,
     "MasakhaNEWSClassification": MTEB(tasks=['MasakhaNEWSClassification'], task_langs=['fr']).tasks[0].langs,
     "MasakhaNEWSClusteringS2S": MTEB(tasks=['MasakhaNEWSClusteringS2S'], task_langs=['fr']).tasks[0].langs,
     "MasakhaNEWSClusteringP2P": MTEB(tasks=['MasakhaNEWSClusteringP2P'], task_langs=['fr']).tasks[0].langs,
+    "XPQARetrieval": MTEB(tasks=['XPQARetrieval'], task_langs=['fr']).tasks[0].langs,
 }
 
+HF_SUBSETS_VALUES = ["fra-fra"]
+ISO3_LANGUAGE = ["fra-Latn"]
 
-MODELS_TO_IGNORE = ['voyage-01', 'voyage-02', 'voyage-lite-01']
+MODELS_TO_IGNORE = ['voyage-01', 'voyage-02', 'voyage-lite-01', 'Geotrend/distilbert-base-en-fr-es-pt-it-cased', 
+                    'Geotrend/bert-base-10lang-cased', 'Geotrend/bert-base-15lang-cased', 'Geotrend/bert-base-25lang-cased',
+                    'dangvantuan/sentence-camembert-large', 'distilbert-base-uncased']
 
 
 class ResultsParser:
@@ -126,8 +131,21 @@ class ResultsParser:
             result_name_score (tuple[str, str]): the name of the task and name of the main scoring metric 
                 for that task
         """
-        key = subkey if subkey else self.lang
         selected_split = split if split else self.split
+
+        if task_results["mteb_version"].startswith("1.11.1"):
+            result = None
+            for eval in task_results["scores"][selected_split]:
+                hf_subset = eval['hf_subset']
+                languages = eval['languages'] # used when hf_subset = "default"
+                if (hf_subset == subkey) or (hf_subset in HF_SUBSETS_VALUES) or (languages == ISO3_LANGUAGE):
+                    result = eval["main_score"]
+                    continue
+            main_score = self.tasks_main_scores_map[task_name]
+            result_name_score = (task_name, main_score)
+            return result, result_name_score
+        
+        key = subkey if subkey else self.lang
         result = task_results[selected_split]
         if key in result:
             result = result[key]
@@ -173,7 +191,7 @@ class ResultsParser:
                         else:
                             subkeys = [None]
                         for split in self.eval_splits_map[task_name]:
-                            if split in task_results:
+                            if (split in task_results) or ("scores" in task_results and split in task_results["scores"]):
                                 for subkey in subkeys:
                                     result, result_name_score = self._get_task_score(task_name, task_results, subkey, split)
                                     dataset_name = f"{task_name}_{split}_{subkey}" if subkey and task_type == "BitextMining" else f"{task_name}_{split}"
