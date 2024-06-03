@@ -46,7 +46,7 @@ def main(args):
     def compute_metrics(eval_pred):
         logits, labels = eval_pred
         predictions = np.argmax(logits, axis=-1)
-        return metric.compute(predictions=predictions, references=labels)
+        return metric.compute(predictions=predictions, references=labels, average="macro")
 
     metric = evaluate.load("f1")
 
@@ -82,8 +82,8 @@ def parse_args():
     parser.add_argument("--dataset", type=str, default=DATASET)
     parser.add_argument("--model", type=str, default=MODEL)
     parser.add_argument("--batch_size", type=int, default=16)
-    parser.add_argument("--learning_rate", type=float, default=5e-5)
-    parser.add_argument("--num_train_epochs", type=int, default=3)
+    parser.add_argument("--learning_rate", type=float, default=1e-5)
+    parser.add_argument("--num_train_epochs", type=int, default=5)
     parser.add_argument("--output_dir", type=str, default="hal_baseline")
     parser.add_argument("--seed", type=int, default=SEED)
     return parser.parse_args()
