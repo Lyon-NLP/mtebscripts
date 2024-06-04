@@ -1,4 +1,5 @@
 import argparse
+import json
 
 import numpy as np
 
@@ -7,9 +8,10 @@ import evaluate
 from datasets import load_dataset
 from transformers import AutoTokenizer, AutoModelForSequenceClassification, TrainingArguments, Trainer
 
+from constants import DATASET_SEED
+
 DATASET = "lyon-nlp/clustering-hal-s2s"
 MODEL = "almanach/camembert-base"
-SEED = 42
 
 
 def main(args):
@@ -26,8 +28,8 @@ def main(args):
 
     dataset = dataset.class_encode_column("label")
     
-    dataset = dataset.train_test_split(test_size=0.3, shuffle=True, stratify_by_column="label", seed=args.seed)
-    dataset_ = dataset["train"].train_test_split(test_size=0.1, shuffle=True, stratify_by_column="label", seed=args.seed)
+    dataset = dataset.train_test_split(test_size=0.3, shuffle=True, stratify_by_column="label", seed=args.dataset_seed)
+    dataset_ = dataset["train"].train_test_split(test_size=0.1, shuffle=True, stratify_by_column="label", seed=args.dataset_seed)
     dataset["train"] = dataset_["train"]
     dataset["validation"] = dataset_["test"]
     print(dataset)
@@ -55,7 +57,8 @@ def main(args):
         learning_rate=args.lr,
         num_train_epochs=args.epochs,
         evaluation_strategy="epoch",
-        output_dir=args.output_dir,
+        output_dir=f"{args.output_dir}_{args.model_seed}",
+        seed=args.model_seed,
     )
 
     trainer = Trainer(
@@ -73,19 +76,26 @@ def main(args):
         eval_dataset=dataset["test"]
     ) 
     print(score)
+    with open(f"{args.output_dir}/scores.json", "w") as f:
+        json.dump({
+            "score": score,
+            "seed": args.model_seed,
+        }, f, indent=2)
 
-    trainer.save_model(args.output_dir)
+    trainer.save_model(f"{args.model_dir}_{args.model_seed}")
 
 
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--dataset", type=str, default=DATASET)
     parser.add_argument("--model", type=str, default=MODEL)
-    parser.add_argument("--batch_size", type=int, default=16)
-    parser.add_argument("--lr", type=float, default=1e-5, help="Learning rate")
+    parser.add_argument("--batch_size", type=int, default=64)
+    parser.add_argument("--lr", type=float, default=1e-4, help="Learning rate")
     parser.add_argument("--epochs", type=int, default=5)
     parser.add_argument("--output_dir", type=str, default="hal_baseline")
-    parser.add_argument("--seed", type=int, default=SEED)
+    parser.add_argument("--model_dir", type=str, default="hal_baseline_models")
+    parser.add_argument("--dataset_seed", type=int, default=DATASET_SEED)
+    parser.add_argument("--model_seed", type=int, default=42)
     return parser.parse_args()
 
 
