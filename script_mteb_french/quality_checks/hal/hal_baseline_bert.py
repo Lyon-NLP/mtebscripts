@@ -1,3 +1,4 @@
+import os
 import argparse
 import json
 
@@ -22,7 +23,7 @@ def main(args):
     }).remove_columns(["hal_id"])
 
     dataset = dataset.filter(lambda example: example["label"] not in ("image"))
-    print(dataset)
+    # print(dataset)
 
     dataset = dataset.class_encode_column("label")
     
@@ -30,7 +31,7 @@ def main(args):
     dataset_ = dataset["train"].train_test_split(test_size=0.1, shuffle=True, stratify_by_column="label", seed=args.dataset_seed)
     dataset["train"] = dataset_["train"]
     dataset["validation"] = dataset_["test"]
-    print(dataset)
+    # print(dataset)
 
     tokenizer = AutoTokenizer.from_pretrained(args.model)
     model = AutoModelForSequenceClassification.from_pretrained(
@@ -72,7 +73,14 @@ def main(args):
     score = trainer.evaluate(
         eval_dataset=dataset["test"]
     ) 
-    print(score)
+    # print(score)
+
+    if not os.path.exists(args.output_dir):
+        os.makedirs(args.output_dir)
+    
+    if not os.path.exists(args.model_dir):
+        os.makedirs(args.model_dir)
+        
     with open(f"{args.output_dir}/scores.json", "w") as f:
         json.dump({
             "score": score,

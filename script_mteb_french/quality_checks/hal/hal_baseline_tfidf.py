@@ -43,7 +43,7 @@ def main(args):
         {
             "estimator__C": [0.1, 1, 10],
             "estimator__kernel": ["linear", "poly", "rbf", "sigmoid"],
-            "estimator__class_weight": [True, False],
+            "estimator__class_weight": ["balanced", None],
         }
     ]
 
@@ -72,9 +72,9 @@ def main(args):
             output_dict=True
         )
 
-        if not os.exists(args.output_dir):
+        if not os.path.exists(args.output_dir):
             os.makedirs(args.output_dir)
-            
+
         with open(os.path.join(args.output_dir, f"report_{estimator.__class__.__name__}_{args.dataset_seed}.json"), "w") as f:
             json.dump(report, f, indent=4)
 
