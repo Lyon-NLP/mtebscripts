@@ -8,8 +8,6 @@ import evaluate
 from datasets import load_dataset
 from transformers import AutoTokenizer, AutoModelForSequenceClassification, TrainingArguments, Trainer
 
-from constants import DATASET_SEED
-
 DATASET = "lyon-nlp/clustering-hal-s2s"
 MODEL = "almanach/camembert-base"
 
@@ -57,8 +55,7 @@ def main(args):
         learning_rate=args.lr,
         num_train_epochs=args.epochs,
         evaluation_strategy="epoch",
-        output_dir=f"{args.output_dir}_{args.model_seed}",
-        seed=args.model_seed,
+        output_dir=f"{args.output_dir}_{args.dataset_seed}"
     )
 
     trainer = Trainer(
@@ -82,7 +79,7 @@ def main(args):
             "seed": args.model_seed,
         }, f, indent=2)
 
-    trainer.save_model(f"{args.model_dir}_{args.model_seed}")
+    trainer.save_model(f"{args.model_dir}_{args.dataset_seed}")
 
 
 def parse_args():
@@ -94,7 +91,7 @@ def parse_args():
     parser.add_argument("--epochs", type=int, default=5)
     parser.add_argument("--output_dir", type=str, default="hal_baseline")
     parser.add_argument("--model_dir", type=str, default="hal_baseline_models")
-    parser.add_argument("--dataset_seed", type=int, default=DATASET_SEED)
+    parser.add_argument("--dataset_seed", type=int, default=42)
     parser.add_argument("--model_seed", type=int, default=42)
     return parser.parse_args()
 
