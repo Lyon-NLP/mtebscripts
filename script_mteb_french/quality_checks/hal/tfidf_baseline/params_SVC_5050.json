@@ -1,0 +1,6 @@
+{
+    "estimator__C": 1,
+    "estimator__class_weight": "balanced",
+    "estimator__kernel": "rbf",
+    "tfidf__max_features": 10000
+}

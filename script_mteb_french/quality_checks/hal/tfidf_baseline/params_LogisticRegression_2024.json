@@ -1,4 +1,4 @@
 {
-    "estimator__C": 1,
+    "estimator__C": 10,
     "tfidf__max_features": 10000
 }

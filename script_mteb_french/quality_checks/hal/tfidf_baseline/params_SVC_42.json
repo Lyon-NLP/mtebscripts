@@ -1,0 +1,6 @@
+{
+    "estimator__C": 1,
+    "estimator__class_weight": null,
+    "estimator__kernel": "linear",
+    "tfidf__max_features": 10000
+}
