@@ -1,0 +1,6 @@
+{
+    "estimator__bootstrap": true,
+    "estimator__class_weight": "balanced_subsample",
+    "estimator__n_estimators": 300,
+    "tfidf__max_features": 10000
+}
