@@ -48,3 +48,10 @@ Wissam42/sentence-croissant-llm-base,1,french,1279887360.0,5.11954944,256.0,2048
 sentence-transformers/paraphrase-multilingual-mpnet-base-v2,0,multilingual,278043648.0,1.112174592,128.0,768.0,contrastive,Apache-2.0,1
 voyage-2,1,english,,,4000.0,1024.0,,Closed source,
 voyage-code-2,1,english,,,16000.0,1536.0,,Closed source,
+Lajavaness/sentence-camembert-large,1,french,336661504.0,1.346646016,514.0,1024.0,contrastive,Apache-2.0,1
+OrdalieTech/Solon-embeddings-large-0.1,1,french,559890432.0,2.239561728,512.0,1024.0,contrastive,MIT,1
+OrdalieTech/Solon-embeddings-base-0.1,1,french,278043648.0,1.112174592,512.0,768.0,contrastive,MIT,1
+manu/sentence_croissant_alpha_v0.3,1,french,1279887360.0,5.11954944,1024.0,2048.0,contrastive,MIT,1
+manu/sentence_croissant_alpha_v0.2,1,french,1279887360.0,5.11954944,1024.0,2048.0,contrastive,MIT,1
+BAAI/bge-m3,1,multilingual,567754752.0,2.271019008,8192.0,1024.0,contrastive,MIT,1
+manu/bge-m3-custom-fr,1,multilingual,567754752.0,2.271019008,8192.0,1024.0,contrastive,MIT,1
