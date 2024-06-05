@@ -30,15 +30,10 @@ def main(args):
     X_train, y_train = dataset["train"]["title"], dataset["train"]["domain"]
     X_test, y_test = dataset["test"]["title"], dataset["test"]["domain"]
 
-    estimators = [LogisticRegression(max_iter=1000), RandomForestClassifier(), SVC()]
+    estimators = [LogisticRegression(max_iter=1000), SVC()]
     parameters = [
         {
             "estimator__C": [0.1, 1, 10],
-        },
-        {
-            "estimator__n_estimators": [200, 300],
-            "estimator__bootstrap": [True, False],
-            "estimator__class_weight": ["balanced", "balanced_subsample"],
         },
         {
             "estimator__C": [0.1, 1, 10],

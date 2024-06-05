@@ -81,7 +81,7 @@ def main(args):
     if not os.path.exists(args.model_dir):
         os.makedirs(args.model_dir)
         
-    with open(f"{args.output_dir}/scores.json", "w") as f:
+    with open(f"{args.output_dir}/scores.json", "a+") as f:
         json.dump({
             "score": score,
             "seed": args.model_seed,
