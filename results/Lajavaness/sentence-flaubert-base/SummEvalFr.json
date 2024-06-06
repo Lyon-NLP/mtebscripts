@@ -1,16 +1,16 @@
 {
-  "dataset_revision": "b385812de6a9577b6f4d0f88c6a6e35395a94054",
+  "dataset_revision": "08e37d5b2920587685f5289d21303d72519fde3a",
   "mteb_dataset_name": "SummEvalFr",
   "mteb_version": "1.7.56",
   "test": {
     "cos_sim": {
-      "pearson": 0.3027783816183802,
-      "spearman": 0.31384360302735664
+      "pearson": 0.3021458813229661,
+      "spearman": 0.3122331108631331
     },
     "dot": {
-      "pearson": 0.30277837874414265,
-      "spearman": 0.31384360302735664
+      "pearson": 0.3021458884038384,
+      "spearman": 0.31236271900908674
     },
-    "evaluation_time": 7.79
+    "evaluation_time": 13.24
   }
 }
