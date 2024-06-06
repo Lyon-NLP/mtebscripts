@@ -70,6 +70,7 @@ SENTENCE_TRANSORMER_MODELS = [
     "OrdalieTech/Solon-embeddings-base-0.1",
     "manu/sentence_croissant_alpha_v0.3",
     "manu/sentence_croissant_alpha_v0.2",
+    "Lajavaness/sentence-flaubert-base",
 ]
 
 # these models max_length is indicated to be 514 whereas the embedding layer actually supports 512
