@@ -1,10 +1,23 @@
 {
-  "dataset_revision": "e06ebbbb123f8144bef1a5d18796f3dec9ae2915",
+  "dataset_revision": "dede868bf6079ab5a09ab5c525f507fd0cf5fc3a",
   "mteb_dataset_name": "HALClusteringS2S",
-  "mteb_version": "1.1.2.dev0",
+  "mteb_version": "1.7.56",
   "test": {
-    "evaluation_time": 292.24,
-    "v_measure": 0.18732355867074946,
-    "v_measure_std": 0.01948937767351967
+    "evaluation_time": 88.76,
+    "main_score": 0.24746145267311284,
+    "v_measure": 0.24746145267311284,
+    "v_measure_std": 0.03358565079933012,
+    "v_measures": [
+      0.24556300720321367,
+      0.19007292116460728,
+      0.25555609403368773,
+      0.1970155908432628,
+      0.21741118943771792,
+      0.298701244005156,
+      0.25895289027392765,
+      0.2707754250391836,
+      0.27824615376498096,
+      0.2623200109653907
+    ]
   }
 }
