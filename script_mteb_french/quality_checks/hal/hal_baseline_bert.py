@@ -84,7 +84,7 @@ def main(args):
     with open(f"{args.output_dir}/scores.json", "a+") as f:
         json.dump({
             "score": score,
-            "seed": args.model_seed,
+            "seed": args.dataset_seed,
         }, f, indent=2)
 
     trainer.save_model(f"{args.model_dir}_{args.dataset_seed}")
