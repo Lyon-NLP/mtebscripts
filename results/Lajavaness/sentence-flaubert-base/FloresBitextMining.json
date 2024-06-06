@@ -1,0 +1,22 @@
+{
+  "dataset_revision": "80dc3040d19756742c9a18267ab30f54fb8e226b",
+  "dev": {
+    "eng_Latn-fra_Latn": {
+      "accuracy": 0.9759277833500501,
+      "f1": 0.9689067201604814,
+      "main_score": 0.9689067201604814,
+      "precision": 0.9657305249080576,
+      "recall": 0.9759277833500501
+    },
+    "evaluation_time": 5.31,
+    "fra_Latn-eng_Latn": {
+      "accuracy": 0.9729187562688064,
+      "f1": 0.9645603477097962,
+      "main_score": 0.9645603477097962,
+      "precision": 0.960548311601471,
+      "recall": 0.9729187562688064
+    }
+  },
+  "mteb_dataset_name": "FloresBitextMining",
+  "mteb_version": "1.7.56"
+}
