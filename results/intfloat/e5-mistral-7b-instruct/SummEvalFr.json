@@ -1,26 +1,16 @@
 {
-  "dataset_revision": "b385812de6a9577b6f4d0f88c6a6e35395a94054",
-  "evaluation_time": 355.9917845726013,
-  "kg_co2_emissions": null,
-  "mteb_version": "1.11.19",
-  "scores": {
-    "test": [
-      {
-        "cos_sim": {
-          "pearson": 0.31344515108916693,
-          "spearman": 0.3120032624874787
-        },
-        "dot": {
-          "pearson": 0.31344505871645967,
-          "spearman": 0.3120032624874787
-        },
-        "hf_subset": "default",
-        "languages": [
-          "fra-Latn"
-        ],
-        "main_score": 0.3120032624874787
-      }
-    ]
-  },
-  "task_name": "SummEvalFr"
+  "dataset_revision": "08e37d5b2920587685f5289d21303d72519fde3a",
+  "mteb_dataset_name": "SummEvalFr",
+  "mteb_version": "1.7.56",
+  "test": {
+    "cos_sim": {
+      "pearson": 0.31309270862926214,
+      "spearman": 0.3124673740516555
+    },
+    "dot": {
+      "pearson": 0.3130926814535482,
+      "spearman": 0.3124673740516555
+    },
+    "evaluation_time": 475.75
+  }
 }
