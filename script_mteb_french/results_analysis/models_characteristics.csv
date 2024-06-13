@@ -37,6 +37,8 @@ sentence-transformers/sentence-t5-xl,1,multilingual,1241696256.0,4.966785024,256
 sentence-transformers/sentence-t5-xxl,1,multilingual,4865577984.0,19.462311936,256.0,768.0,contrastive,Apache-2.0,1
 shibing624/text2vec-base-multilingual,1,multilingual,117653760.0,0.47061504,256.0,384.0,contrastive,Apache-2.0,1
 text-embedding-ada-002,1,multilingual,,,8191.0,1536.0,,Closed source,
+text-embedding-3-small,1,multilingual,,,8191.0,1536.0,,Closed source,
+text-embedding-3-large,1,multilingual,,,8191.0,3072.0,,Closed source,
 voyage-01,1,english,,,4000.0,1024.0,,Closed source,
 voyage-02,1,english,,,4000.0,1024.0,,Closed source,
 voyage-lite-01,1,english,,,4000.0,1024.0,,Closed source,
