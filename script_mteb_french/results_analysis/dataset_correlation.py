@@ -37,7 +37,7 @@ if __name__ == "__main__":
         results_df = pd.read_excel(args.results_filepath, index_col=0, header=[0, 1])
     else:
         rp = ResultsParser()
-        results_df = rp(args.results_folder, return_main_scores=False)
+        results_df = rp(args.results_folder, return_main_scores=False, save_results=False)
     
     results_df = results_df.droplevel(0, axis=1)
     results_df.index = results_df.index.map(
