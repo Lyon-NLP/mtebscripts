@@ -2,6 +2,7 @@ import os
 from argparse import ArgumentParser, Namespace
 import matplotlib.pyplot as plt
 import seaborn as sns
+import pandas as pd
 import numpy as np
 
 from results_parser import ResultsParser
@@ -14,7 +15,8 @@ def parse_args() -> Namespace:
         (argparse.Namespace): the arguments
     """
     parser = ArgumentParser()
-    parser.add_argument("--results_folder", required=True, type=str)
+    parser.add_argument("--results_folder", type=str)
+    parser.add_argument("--results_filepath", type=str, default=None)
     parser.add_argument("--output_folder", type=str, default="./analyses_outputs/results_correlations")
     parser.add_argument(
         "--output_format",
@@ -31,8 +33,12 @@ if __name__ == "__main__":
 
     args = parse_args()
     # Get results
-    rp = ResultsParser()
-    results_df = rp(args.results_folder, return_main_scores=False)
+    if args.results_filepath is not None:
+        results_df = pd.read_excel(args.results_filepath, index_col=0, header=[0, 1])
+    else:
+        rp = ResultsParser()
+        results_df = rp(args.results_folder, return_main_scores=False)
+    
     results_df = results_df.droplevel(0, axis=1)
     results_df.index = results_df.index.map(
         lambda x: os.path.basename(x)
@@ -51,7 +57,7 @@ if __name__ == "__main__":
         spearman_corr_matrix_datasets.fillna(0) * mask
     ).map(lambda x: np.nan if x == 0 else x)
     sns.heatmap(
-        spearman_corr_matrix_datasets * mask, fmt=".2f", linewidths=0.5, cmap="coolwarm"
+        spearman_corr_matrix_datasets * mask, fmt=".2f", linewidths=0.5, cmap="PuBu"
     )
     plt.title("Dataset Correlation Heatmap (Spearman)")
     plt.savefig(
@@ -70,7 +76,7 @@ if __name__ == "__main__":
         lambda x: np.nan if x == 0 else x
     )
     with sns.plotting_context("notebook", font_scale=1.4):
-        sns.heatmap(spearman_corr_matrix_models, fmt=".2f", linewidths=0.5, cmap="coolwarm")
+        sns.heatmap(spearman_corr_matrix_models, fmt=".2f", linewidths=0.5, cmap="PuBu")
     #set plt font size
     plt.rcParams.update({'font.size': 16})
     plt.title("Model Correlation Heatmap (Spearman)")

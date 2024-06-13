@@ -77,7 +77,7 @@ if __name__ == "__main__":
     if not os.path.exists(args.output_folder):
         os.makedirs(args.output_folder)
 
-    if args.results_filepath:
+    if args.results_filepath is not None:
         results_df = pd.read_excel(args.results_filepath, index_col=0, header=[0, 1])
     else:
         rp = ResultsParser()
