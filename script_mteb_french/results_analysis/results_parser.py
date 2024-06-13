@@ -52,8 +52,13 @@ class ResultsParser:
         results_df, tasks_main_scores_subset = self._convert_to_results_dataframe(result_dict)
         results_df = self._add_multiindex_to_df(results_df)
         
-        if kwargs["process_raw"]:
-            ResultsParser.process_raw(results_df, **kwargs)
+        if "process_raw" in kwargs and kwargs["process_raw"]:
+            processed_results = ResultsParser.process_raw(results_df, **kwargs)
+            if apply_style:
+                processed_results = ResultsParser._add_style_to_df(processed_results)
+            if save_results:
+                ResultsParser._save_as_file(processed_results, raw=False, **kwargs)
+        
         if apply_style:
             results_df = ResultsParser._add_style_to_df(results_df)
         if save_results:
@@ -292,7 +297,7 @@ class ResultsParser:
         results = results.round(2)
         results = results.fillna("")
 
-        ResultsParser._save_as_file(results, raw=False, **kwargs)
+        return results
 
 
 def parse_args() -> Namespace:
