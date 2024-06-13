@@ -81,10 +81,10 @@ def main(args):
     if not os.path.exists(args.model_dir):
         os.makedirs(args.model_dir)
         
-    with open(f"{args.output_dir}/scores.json", "w") as f:
+    with open(f"{args.output_dir}/scores.json", "a+") as f:
         json.dump({
             "score": score,
-            "seed": args.model_seed,
+            "seed": args.dataset_seed,
         }, f, indent=2)
 
     trainer.save_model(f"{args.model_dir}_{args.dataset_seed}")
