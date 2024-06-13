@@ -253,7 +253,7 @@ if __name__ == '__main__':
     # define the mask to set the values in the upper triangle to True
     mask = np.triu(np.ones_like(data_emb_df, dtype=bool))
     with sns.plotting_context("notebook", font_scale=1.4):
-        sns.heatmap(data_emb_df, mask=mask, vmin=data_emb_df.values.min(), vmax=data_emb_df.values.max(), annot=True, cmap='coolwarm')
+        sns.heatmap(data_emb_df, mask=mask, vmin=data_emb_df.values.min(), vmax=data_emb_df.values.max(), annot=True, cmap='PuBu')
     #set plt font size
     plt.rcParams.update({'font.size': 16})
     plt.savefig(os.path.join(args.output_folder, f'cosim_{args.task_type}.pdf'), bbox_inches='tight')

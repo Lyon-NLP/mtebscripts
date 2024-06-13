@@ -55,7 +55,8 @@ def parse_args() -> Namespace:
         (argparse.Namespace): the arguments
     """
     parser = ArgumentParser()
-    parser.add_argument("--results_folder", required=True, type=str)
+    parser.add_argument("--results_folder", type=str)
+    parser.add_argument("--results_filepath", type=str, default=None)
     parser.add_argument("--characteristics_csv", required=True, type=str)
     parser.add_argument(
         "--output_folder",
@@ -104,7 +105,7 @@ def global_correlation(
     # plot correlation heatmap
     plt.figure(figsize=(16, 16))
     with sns.plotting_context("notebook", font_scale=1.4):
-        sns.heatmap(corr_matrix, center=0, fmt=.6, cmap="coolwarm")
+        sns.heatmap(corr_matrix, center=0, fmt=.6, cmap="PuBu")
     plt.rcParams.update({'font.size': 16})
     plt.savefig(
         os.path.join(output_path, f"correlation_heatmap.{output_format}"), bbox_inches="tight"
@@ -150,8 +151,12 @@ if __name__ == "__main__":
     if not os.path.exists(args.output_folder):
         os.makedirs(args.output_folder)
 
-    rp = ResultsParser()
-    results_df = rp(args.results_folder, return_main_scores=False)
+    if args.results_filepath is not None:
+        results_df = pd.read_excel(args.results_filepath, index_col=0, header=[0, 1])
+    else:
+        rp = ResultsParser()
+        results_df = rp(args.results_folder, return_main_scores=False, save_results=False)
+    
     results_df = results_df.droplevel(0, axis=1)
     results_df = results_df.reset_index()
     results_df["model"] = results_df["model"].apply(

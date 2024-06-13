@@ -15,7 +15,8 @@ def parse_args() -> Namespace:
         (argparse.Namespace): the arguments
     """
     parser = ArgumentParser()
-    parser.add_argument("--results_folder", required=True, type=str)
+    parser.add_argument("--results_folder", type=str)
+    parser.add_argument("--results_filepath", type=str, default=None)
     parser.add_argument(
         "--output_folder",
         type=str,
@@ -76,11 +77,16 @@ if __name__ == "__main__":
     if not os.path.exists(args.output_folder):
         os.makedirs(args.output_folder)
 
-    rp = ResultsParser()
-    results_df = rp(args.results_folder, return_main_scores=False)
+    if args.results_filepath is not None:
+        results_df = pd.read_excel(args.results_filepath, index_col=0, header=[0, 1])
+    else:
+        rp = ResultsParser()
+        results_df = rp(args.results_folder, return_main_scores=False, save_results=False)
+
     results_df = results_df.droplevel(0, axis=1)
     results_df = results_df.reset_index()
     results_df["model"] = results_df["model"].apply(
         lambda x: os.path.basename(x)
     )
+    
     run_statistical_tests(results_df, args.output_folder, args.output_format)
