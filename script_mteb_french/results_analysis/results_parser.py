@@ -51,11 +51,13 @@ class ResultsParser:
         result_dict = ResultsParser._load_json_files(results_folder)
         results_df, tasks_main_scores_subset = self._convert_to_results_dataframe(result_dict)
         results_df = self._add_multiindex_to_df(results_df)
-
+        
+        if kwargs["process_raw"]:
+            ResultsParser.process_raw(results_df, **kwargs)
         if apply_style:
             results_df = ResultsParser._add_style_to_df(results_df)
         if save_results:
-            ResultsParser._save_as_file(results_df, **kwargs)
+            ResultsParser._save_as_file(results_df, raw=True, **kwargs)
         if return_main_scores:
             return results_df, tasks_main_scores_subset
 
@@ -253,22 +255,44 @@ class ResultsParser:
         return style
     
     @staticmethod
-    def _save_as_file(results_df:pd.DataFrame, output_format:str="excel", output_folder:str="./", **kwargs):
+    def _save_as_file(results_df: pd.DataFrame, output_format: str = "excel", output_folder: str = "./", raw: bool = True, **kwargs):
         if output_format not in ["excel", "latex", "csv"]:
             raise ValueError(f"'format' argument should be either excel, latex or csv, not {format}")
         
         if not os.path.exists(output_folder):
             os.makedirs(output_folder)
         
+        filename = "results_raw" if raw else "results"
+        
         match output_format:
             case "csv":
                 results_df.style.clear()
-                results_df.to_csv(os.path.join(output_folder, "results.csv"))
+                results_df.to_csv(os.path.join(output_folder, f"{filename}.csv"))
             case "excel":
-                results_df.to_excel(os.path.join(output_folder, "results.xlsx"))
+                results_df.to_excel(os.path.join(output_folder, f"{filename}.xlsx"))
             case "latex":
-                results_df.to_latex(os.path.join(output_folder, "results.tex"))
-        print("Done !")
+                results_df.to_latex(os.path.join(output_folder, f"{filename}.tex"))
+        print(f"Saved results in {output_format} format at {os.path.join(output_folder, filename)}.")
+    
+    @staticmethod
+    def process_raw(results_df: pd.DataFrame, **kwargs) -> pd.DataFrame: 
+        results_df.style.clear()
+        results = results_df.copy()
+        # Remove columns if multiple test split for task
+        results.drop([('PairClassification', 'OpusparcusPC_validation.full'),], axis=1, inplace=True)
+        # Remove bitext mining -> use in separate table
+        cols2remove = [
+            (task_type, task_name) for task_type, task_name in results.columns
+            if "XPQA" in task_name or "Mintaka" in task_name
+            or task_type == "BitextMining"
+            ]
+        results.drop(cols2remove, axis=1, inplace=True)
+        results.columns = pd.MultiIndex.from_tuples([(task_type, task_name.replace("_test", "").replace("_test.full", "")) for task_type, task_name in results.columns])
+        results.sort_index(axis=1, level=[0, 1], ascending=[True, False], inplace=True)
+        results = results.round(2)
+        results = results.fillna("")
+
+        ResultsParser._save_as_file(results, raw=False, **kwargs)
 
 
 def parse_args() -> Namespace:
@@ -282,6 +306,7 @@ def parse_args() -> Namespace:
     parser.add_argument("--output_format", type=str, choices=["excel", "csv", "latex"], default="excel")
     parser.add_argument("--apply_style", type=bool, default=True)
     parser.add_argument("--output_folder", type=str, default="./analyses_outputs/")
+    parser.add_argument("--process_raw", type=bool, default=True)
     args = parser.parse_args()
 
     return args
