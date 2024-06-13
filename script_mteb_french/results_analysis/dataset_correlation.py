@@ -33,10 +33,19 @@ if __name__ == "__main__":
     # Get results
     rp = ResultsParser()
     results_df = rp(args.results_folder, return_main_scores=False)
+    # sort by first level before dropping it
+    results_df = results_df.sort_index(axis=1)
     results_df = results_df.droplevel(0, axis=1)
+    results_df.columns = results_df.columns.map(
+        lambda x: x.split("_")[0]
+    )
+    #remove duplicates columns and keep the first one
+    results_df = results_df.loc[:,~results_df.columns.duplicated()]
     results_df.index = results_df.index.map(
         lambda x: os.path.basename(x)
     )
+    # keep first index if duplicated
+    results_df = results_df[~results_df.index.duplicated(keep="first")]
     # Prepare output folder
     if not os.path.exists(args.output_folder):
         os.makedirs(args.output_folder)
