@@ -108,13 +108,16 @@ if os.path.exists(results_path):
 else:
     SPECS = {}
 
-for model_type in ["sentence_transformer", "universal_sentence_encoder", "laser"]:
+for model_type in ["sentence_transformer", "universal_sentence_encoder", "laser", "flag_embed"]:
     for model_name in TYPES_TO_MODELS[model_type]:
         print(f"Getting specs for {model_name}")
         if model_name in SPECS:
             print("Already computed")
         else:
-            SPECS[model_name] = get_model_specs(model_name, model_type)
+            if model_type == "flag_embed":
+                SPECS[model_name] = get_model_specs(model_name, "sentence_transformer")
+            else:
+                SPECS[model_name] = get_model_specs(model_name, model_type)
             with open(results_path, "w") as f:
                 json.dump(SPECS, f, indent=4)
 

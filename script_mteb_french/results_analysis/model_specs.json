@@ -257,5 +257,54 @@
         "n_params": 44615936,
         "input_size": null,
         "embedding_size": 1024
+    },
+    "OrdalieTech/Solon-embeddings-large-0.1": {
+        "computed_size_in_gb": 2.239561728,
+        "files_size_in_gb": null,
+        "n_params": 559890432,
+        "input_size": 512,
+        "embedding_size": 1024
+    },
+    "OrdalieTech/Solon-embeddings-base-0.1": {
+        "computed_size_in_gb": 1.112174592,
+        "files_size_in_gb": null,
+        "n_params": 278043648,
+        "input_size": 512,
+        "embedding_size": 768
+    },
+    "manu/sentence_croissant_alpha_v0.3": {
+        "computed_size_in_gb": 5.11954944,
+        "files_size_in_gb": null,
+        "n_params": 1279887360,
+        "input_size": 1024,
+        "embedding_size": 2048
+    },
+    "manu/sentence_croissant_alpha_v0.2": {
+        "computed_size_in_gb": 5.11954944,
+        "files_size_in_gb": null,
+        "n_params": 1279887360,
+        "input_size": 1024,
+        "embedding_size": 2048
+    },
+    "Lajavaness/sentence-camembert-large": {
+        "computed_size_in_gb": 1.346646016,
+        "files_size_in_gb": null,
+        "n_params": 336661504,
+        "input_size": 514,
+        "embedding_size": 1024
+    },
+    "BAAI/bge-m3": {
+        "computed_size_in_gb": 2.271019008,
+        "files_size_in_gb": null,
+        "n_params": 567754752,
+        "input_size": 8192,
+        "embedding_size": 1024
+    },
+    "manu/bge-m3-custom-fr": {
+        "computed_size_in_gb": 2.271019008,
+        "files_size_in_gb": null,
+        "n_params": 567754752,
+        "input_size": 8192,
+        "embedding_size": 1024
     }
 }
