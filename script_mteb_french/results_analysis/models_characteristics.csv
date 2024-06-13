@@ -39,6 +39,7 @@ shibing624/text2vec-base-multilingual,1,multilingual,117653760.0,0.47061504,256.
 text-embedding-ada-002,1,multilingual,,,8191.0,1536.0,,Closed source,
 text-embedding-3-small,1,multilingual,,,8191.0,1536.0,,Closed source,
 text-embedding-3-large,1,multilingual,,,8191.0,3072.0,,Closed source,
+mistral-embed,1,multilingual,,,16384.0,1024.0,,Closed source,
 voyage-01,1,english,,,4000.0,1024.0,,Closed source,
 voyage-02,1,english,,,4000.0,1024.0,,Closed source,
 voyage-lite-01,1,english,,,4000.0,1024.0,,Closed source,
@@ -51,6 +52,7 @@ sentence-transformers/paraphrase-multilingual-mpnet-base-v2,0,multilingual,27804
 voyage-2,1,english,,,4000.0,1024.0,,Closed source,
 voyage-code-2,1,english,,,16000.0,1536.0,,Closed source,
 Lajavaness/sentence-camembert-large,1,french,336661504.0,1.346646016,514.0,1024.0,contrastive,Apache-2.0,1
+Lajavaness/sentence-flaubert-base,1,french,137321472.0,0.549285888,512.0,768.0,contrastive,Apache-2.0,1
 OrdalieTech/Solon-embeddings-large-0.1,1,french,559890432.0,2.239561728,512.0,1024.0,contrastive,MIT,1
 OrdalieTech/Solon-embeddings-base-0.1,1,french,278043648.0,1.112174592,512.0,768.0,contrastive,MIT,1
 manu/sentence_croissant_alpha_v0.3,1,french,1279887360.0,5.11954944,1024.0,2048.0,contrastive,MIT,1
