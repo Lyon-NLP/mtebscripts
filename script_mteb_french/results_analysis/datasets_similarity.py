@@ -48,14 +48,17 @@ def get_samples_from_dataset(
         list[str]: a list of texts from the task's dataset
     """
     samples = []
-    dataset = task.dataset if task.description["type"].lower() != "retrieval" else task.corpus
+    dataset = task.dataset if task.metadata.type.lower() != "retrieval" else task.corpus
     if task.is_multilingual or task.is_crosslingual:
         for lang in langs:
             if lang in dataset:
-                for split in task.description["eval_splits"]:
-                    samples.extend(dataset[lang][split][text_key])
+                for split in task.metadata.eval_splits:
+                    if task.metadata.name == "PawsX":
+                        samples.extend(dataset[lang][split][0][text_key])
+                    else:
+                        samples.extend(dataset[lang][split][text_key])
     else:
-        for split in task.description["eval_splits"]:
+        for split in task.metadata.eval_splits:
             samples.extend(dataset[split][text_key])
     # flatten in case we have a list of list of strings (e.g. clustering tasks)
     if isinstance(samples[0], list):
@@ -85,7 +88,7 @@ def get_samples_from_retrieval_dataset(
         list[str]: a list of texts from the task's dataset
     """
     samples = []
-    for split in task.description["eval_splits"]:
+    for split in task.metadata.eval_splits:
         data = list(task.corpus[split].values())
         data = [t["text"] for t in data]
         samples.extend(data)
@@ -121,9 +124,9 @@ def get_all_samples(tasks:list[str], n_samples:int=90, langs:list[str]="fr") -> 
     task_samples_dict = {}
     evaluation = MTEB(tasks=tasks, task_langs=langs)
     for task in tqdm(evaluation.tasks):
-        task.load_data(eval_splits=task.description.get("eval_splits", []))
-        text_key = task_type_to_text_key[task.description["type"].lower()]
-        match task.description["type"].lower():
+        task.load_data(eval_splits=task.metadata.eval_splits)
+        text_key = task_type_to_text_key[task.metadata.type.lower()]
+        match task.metadata.type.lower():
             case "retrieval":
                 samples = get_samples_from_retrieval_dataset(task, n_samples)
             case other:
@@ -134,7 +137,7 @@ def get_all_samples(tasks:list[str], n_samples:int=90, langs:list[str]="fr") -> 
                     langs=langs
                     )
 
-        task_samples_dict[task.description["name"]] = samples
+        task_samples_dict[task.metadata.name] = samples
 
     assert all([len(ts) == n_samples for ts in list(task_samples_dict.values())]), (
         "A task doesn't have the required number of samples :"
@@ -170,7 +173,7 @@ def parse_args() -> Namespace:
     parser.add_argument("--task_type", type=str, default="all")
     parser.add_argument("--langs", type=list[str], default=["fr"])
     parser.add_argument("--output_folder", type=str, default="./analyses_outputs/datasets_similarity")
-    parser.add_argument("--model_name", type=str, default="intfloat/multilingual-e5-large")
+    parser.add_argument("--model_name", type=str, default="intfloat/multilingual-e5-base")
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--n_samples", type=int, default=90)
 
@@ -234,6 +237,7 @@ if __name__ == '__main__':
         ax.scatter(centroid[0], centroid[1], lw=1, s=50, color=color, label=f"{i+1} - {name}", edgecolors="black")
         ellipse = Ellipse(xy=centroid, width=x.std(), height=y.std(), fc=color, lw=0, alpha=.3)
         ax.add_patch(ellipse)
+        ax.annotate(f"{i+1}", xy=centroid, xytext=centroid,)
     # Setup legend on the side
     box = ax.get_position()
     ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
@@ -253,7 +257,7 @@ if __name__ == '__main__':
     # define the mask to set the values in the upper triangle to True
     mask = np.triu(np.ones_like(data_emb_df, dtype=bool))
     with sns.plotting_context("notebook", font_scale=1.4):
-        sns.heatmap(data_emb_df, mask=mask, vmin=data_emb_df.values.min(), vmax=data_emb_df.values.max(), annot=True, cmap='coolwarm')
+        sns.heatmap(data_emb_df, mask=mask, vmin=data_emb_df.values.min(), vmax=data_emb_df.values.max(), annot=True, cmap='PuBu')
     #set plt font size
     plt.rcParams.update({'font.size': 16})
     plt.savefig(os.path.join(args.output_folder, f'cosim_{args.task_type}.pdf'), bbox_inches='tight')
