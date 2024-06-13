@@ -104,7 +104,7 @@ def global_correlation(
     # plot correlation heatmap
     plt.figure(figsize=(16, 16))
     with sns.plotting_context("notebook", font_scale=1.4):
-            sns.heatmap(corr_matrix, center=0, fmt=.6, cmap="coolwarm")
+        sns.heatmap(corr_matrix, center=0, fmt=.6, cmap="coolwarm")
     plt.rcParams.update({'font.size': 16})
     plt.savefig(
         os.path.join(output_path, f"correlation_heatmap.{output_format}"), bbox_inches="tight"
